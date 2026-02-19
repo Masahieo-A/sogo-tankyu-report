@@ -1,0 +1,55 @@
+{
+  "eventTitle": "総合探究成果報告会",
+  "eventDate": "2025年〇月〇日",
+  "notice": "学内限定です。PDF・スライドは組織内のみ閲覧可能です。",
+  "groups": [
+    {
+      "group_id": "001",
+      "group_name": "グループ1",
+      "theme_title": "探究テーマのタイトル例",
+      "theme_detail": "発表の概要をここに記載します。",
+      "timeslot_label": "10:00-10:10",
+      "start_time": "10:00",
+      "end_time": "10:10",
+      "room_name": "3-2教室",
+      "pdf_title": "参考資料",
+      "pdf_drive_url": "https://drive.google.com/file/d/XXXX/view?usp=sharing",
+      "pdf_embed_url": "https://drive.google.com/file/d/XXXX/preview",
+      "slides_title": "発表スライド",
+      "slides_view_url": "https://docs.google.com/presentation/d/YYYY/view",
+      "slides_present_url": "https://docs.google.com/presentation/d/YYYY/present"
+    },
+    {
+      "group_id": "002",
+      "group_name": "グループ2",
+      "theme_title": "もう一つの探究テーマ",
+      "theme_detail": "2つ目のグループの概要です。",
+      "timeslot_label": "10:10-10:20",
+      "start_time": "10:10",
+      "end_time": "10:20",
+      "room_name": "視聴覚室",
+      "pdf_title": "参考資料",
+      "pdf_drive_url": "",
+      "pdf_embed_url": "",
+      "slides_title": "発表スライド",
+      "slides_view_url": "",
+      "slides_present_url": ""
+    },
+    {
+      "group_id": "003",
+      "group_name": "グループ3",
+      "theme_title": "第三のテーマ",
+      "theme_detail": "3つ目の概要。",
+      "timeslot_label": "10:00-10:10",
+      "start_time": "10:00",
+      "end_time": "10:10",
+      "room_name": "3-2教室",
+      "pdf_title": "",
+      "pdf_drive_url": "",
+      "pdf_embed_url": "",
+      "slides_title": "",
+      "slides_view_url": "",
+      "slides_present_url": ""
+    }
+  ]
+}

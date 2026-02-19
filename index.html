@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>総合探究成果報告会 - スケジュール</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="header">
+    <h1>総合探究成果報告会</h1>
+    <p class="event-date" id="eventDate"></p>
+    <p class="notice" id="notice"></p>
+  </header>
+
+  <main class="main">
+    <section class="schedule-section">
+      <h2>発表スケジュール一覧</h2>
+      <p class="schedule-desc">グループ名をクリックすると、発表詳細・資料ページへ移動します。</p>
+      <div class="table-wrap">
+        <table class="schedule-table" id="scheduleTable">
+          <thead>
+            <tr>
+              <th>時間帯</th>
+              <th>教室</th>
+              <th>グループ</th>
+              <th>探究テーマ</th>
+            </tr>
+          </thead>
+          <tbody id="scheduleBody">
+            <!-- JS で生成 -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>学内限定・組織内のみ閲覧可能</p>
+    <p><a href="presenter/">発表者用ページはこちら</a></p>
+  </footer>
+
+  <script src="schedule.js"></script>
+</body>
+</html>
