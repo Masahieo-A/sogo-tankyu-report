@@ -62,11 +62,19 @@
       html += '</div>';
     }
 
-    if (group.slides_view_url || group.slides_present_url) {
+    if (group.slides_pdf_drive_url || group.slides_pdf_embed_url || group.slides_view_url || group.slides_present_url) {
       html += '<div class="section-block">';
       html += '<h3>発表スライド</h3>';
       if (group.slides_title) html += '<p><strong>' + escapeHtml(group.slides_title) + '</strong></p>';
+      if (group.slides_pdf_embed_url) {
+        html += '<div class="pdf-embed-wrap">';
+        html += '<iframe src="' + escapeHtml(group.slides_pdf_embed_url) + '" title="発表スライド PDF"></iframe>';
+        html += '</div>';
+      }
       html += '<ul class="link-list">';
+      if (group.slides_pdf_drive_url) {
+        html += '<li><a href="' + escapeHtml(group.slides_pdf_drive_url) + '" target="_blank" rel="noopener" class="btn">発表スライド PDF を新規タブで開く</a></li>';
+      }
       if (group.slides_present_url) {
         html += '<li><a href="' + escapeHtml(group.slides_present_url) + '" target="_blank" rel="noopener" class="btn">投影（プレゼン表示）を新規タブで開く</a></li>';
       }
@@ -77,7 +85,7 @@
       html += '</div>';
     }
 
-    if (!group.theme_detail && !group.pdf_embed_url && !group.pdf_drive_url && !group.slides_view_url && !group.slides_present_url) {
+    if (!group.theme_detail && !group.pdf_embed_url && !group.pdf_drive_url && !group.slides_pdf_drive_url && !group.slides_pdf_embed_url && !group.slides_view_url && !group.slides_present_url) {
       html += '<div class="section-block"><p class="text-muted">このグループの資料はまだ登録されていません。</p></div>';
     }
 
