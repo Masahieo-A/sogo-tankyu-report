@@ -1,52 +1,181 @@
-# Google Sheets から schedule.json を出力する
-
-## 方法1: Google Apps Script で JSON を取得
-
-1. スプレッドシートを開く → **拡張機能** → **Apps Script**
-2. 次のようなスクリプトを貼り付けて保存・実行（「実行」で一度権限を許可）
-
-```javascript
-function exportScheduleJson() {
-  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-  var data = sheet.getDataRange().getValues();
-  if (data.length < 2) return;
-  var headers = data[0];
-  var rows = data.slice(1);
-  var groups = rows.map(function (row) {
-    var obj = {};
-    headers.forEach(function (h, i) {
-      obj[h] = row[i] != null ? String(row[i]).trim() : '';
-    });
-    return obj;
-  });
-  var out = {
-    eventTitle: '総合探究成果報告会',
-    eventDate: sheet.getParent().getName() || '', // または固定日付
-    notice: '学内限定です。PDF・スライドは組織内のみ閲覧可能です。',
-    groups: groups
-  };
-  Logger.log(JSON.stringify(out, null, 2));
-  // ログに出るのでコピーして data/schedule.json に貼り付け
-  // または Drive にファイルとして保存する処理を追加可能
-}
-```
-
-3. **実行** → **exportScheduleJson** を選択 → 実行
-4. **表示** → **ログ** で出力された JSON をコピーし、プロジェクトの `data/schedule.json` に貼り付けて保存
-
-## 方法2: 手動で CSV エクスポート → JSON 変換
-
-1. シートを **ファイル → ダウンロード → カンマ区切り値 (.csv)** でダウンロード
-2. オンラインの CSV→JSON 変換ツールや、ローカルの簡易スクリプトで `schedule.json` の形式に合わせて変換
-3. `eventTitle` / `eventDate` / `notice` / `groups` の形になるよう整形する
-
-## 列名の対応
-
-Sheets の1行目（ヘッダー）は、`schedule.json` の各グループオブジェクトのキーと一致させてください。  
-例: `group_id`, `group_name`, `theme_title`, `timeslot_label`, `room_name`, `pdf_drive_url`, `pdf_embed_url`, `slides_view_url`, `slides_present_url` など（`docs/DATA_SCHEMA.md` 参照）。
-
-## 本番前の確認
-
-- `slides_present_url` は必ず **/present** のURLになっているか
-- PDF の `pdf_embed_url` は **/preview** のURLか
-- すべてのリンクは「組織内のみ」共有で、Publish to the web にしていないか
+Logging output too large. Truncating output. {
+  "eventTitle": "総合探究成果報告会",
+  "eventDate": "2025年〇月〇日",
+  "notice": "学内限定です。PDF・スライドは組織内のみ閲覧可能です。",
+  "groups": [
+    {
+      "group id": "1",
+      "group name": "201-1",
+      "theme title": "",
+      "theme detail": "",
+      "timeslot": "",
+      "room": "",
+      "report drive url": "https://drive.google.com/file/d/15xR1DcxmkDpgRL7vVS7i-Mf3BTR9ud5r/view",
+      "report embed url": "https://drive.google.com/file/d/15xR1DcxmkDpgRL7vVS7i-Mf3BTR9ud5r/preview",
+      "slides drive url": "https://drive.google.com/file/d/1N7UMX-Zur4R0ASKeSRzbhjRsyS8xxkAz/view",
+      "slides embed url": "https://drive.google.com/file/d/1N7UMX-Zur4R0ASKeSRzbhjRsyS8xxkAz/preview"
+    },
+    {
+      "group id": "2",
+      "group name": "201-2",
+      "theme title": "",
+      "theme detail": "",
+      "timeslot": "",
+      "room": "",
+      "report drive url": "https://drive.google.com/file/d/1u4sESJQGC8NttNvgamXN-x8jDtf0KIjj/view",
+      "report embed url": "https://drive.google.com/file/d/1u4sESJQGC8NttNvgamXN-x8jDtf0KIjj/preview",
+      "slides drive url": "https://drive.google.com/file/d/1HMhouQd1v_LR-MN5F4ut8cKiJpmO4Zax/view",
+      "slides embed url": "https://drive.google.com/file/d/1HMhouQd1v_LR-MN5F4ut8cKiJpmO4Zax/preview"
+    },
+    {
+      "group id": "3",
+      "group name": "201-3",
+      "theme title": "",
+      "theme detail": "",
+      "timeslot": "",
+      "room": "",
+      "report drive url": "https://drive.google.com/file/d/1LU3NT92KFzGFaURIDnxdvOcdntN3pNfv/view",
+      "report embed url": "https://drive.google.com/file/d/1LU3NT92KFzGFaURIDnxdvOcdntN3pNfv/preview",
+      "slides drive url": "https://drive.google.com/file/d/1wq3UKbYTlamgzJNhoGQ2aGXhHEPiToob/view",
+      "slides embed url": "https://drive.google.com/file/d/1wq3UKbYTlamgzJNhoGQ2aGXhHEPiToob/preview"
+    },
+    {
+      "group id": "4",
+      "group name": "201-4",
+      "theme title": "",
+      "theme detail": "",
+      "timeslot": "",
+      "room": "",
+      "report drive url": "https://drive.google.com/file/d/1uHPEbg5kT-ykC1OeTFqFrFR7GtF_iJAm/view",
+      "report embed url": "https://drive.google.com/file/d/1uHPEbg5kT-ykC1OeTFqFrFR7GtF_iJAm/preview",
+      "slides drive url": "https://drive.google.com/file/d/1OFrxfU4k4Gpmemq5CjXwBoMTVr1eKqv2/view",
+      "slides embed url": "https://drive.google.com/file/d/1OFrxfU4k4Gpmemq5CjXwBoMTVr1eKqv2/preview"
+    },
+    {
+      "group id": "5",
+      "group name": "201-5",
+      "theme title": "",
+      "theme detail": "",
+      "timeslot": "",
+      "room": "",
+      "report drive url": "https://drive.google.com/file/d/1eC_JyVQXoSp4xQAxeD05EdnkC6IXNFSZ/view",
+      "report embed url": "https://drive.google.com/file/d/1eC_JyVQXoSp4xQAxeD05EdnkC6IXNFSZ/preview",
+      "slides drive url": "https://drive.google.com/file/d/1OFKIXX60gtSXpMUgfAbpEt7XprSSjbAQ/view",
+      "slides embed url": "https://drive.google.com/file/d/1OFKIXX60gtSXpMUgfAbpEt7XprSSjbAQ/preview"
+    },
+    {
+      "group id": "6",
+      "group name": "201-6",
+      "theme title": "",
+      "theme detail": "",
+      "timeslot": "",
+      "room": "",
+      "report drive url": "https://drive.google.com/file/d/1eoJOApOFiuDGix8sDl07uP6yvdt3ZpBm/view",
+      "report embed url": "https://drive.google.com/file/d/1eoJOApOFiuDGix8sDl07uP6yvdt3ZpBm/preview",
+      "slides drive url": "https://drive.google.com/file/d/1abteacyk1pd9pIE88dRdae0ifD2-vm_r/view",
+      "slides embed url": "https://drive.google.com/file/d/1abteacyk1pd9pIE88dRdae0ifD2-vm_r/preview"
+    },
+    {
+      "group id": "7",
+      "group name": "202-1",
+      "theme title": "",
+      "theme detail": "",
+      "timeslot": "",
+      "room": "",
+      "report drive url": "https://drive.google.com/file/d/1zFAaDnxunBv1CWnv0-0B4RC8tReKbnkF/view",
+      "report embed url": "https://drive.google.com/file/d/1zFAaDnxunBv1CWnv0-0B4RC8tReKbnkF/preview",
+      "slides drive url": "https://drive.google.com/file/d/17kq-vKcheVHWNNR_lCvfMG3LQiylRfxk/view",
+      "slides embed url": "https://drive.google.com/file/d/17kq-vKcheVHWNNR_lCvfMG3LQiylRfxk/preview"
+    },
+    {
+      "group id": "8",
+      "group name": "202-2",
+      "theme title": "",
+      "theme detail": "",
+      "timeslot": "",
+      "room": "",
+      "report drive url": "https://drive.google.com/file/d/1IghMh_roX7RlCILBrHR42r_AEga50OFQ/view",
+      "report embed url": "https://drive.google.com/file/d/1IghMh_roX7RlCILBrHR42r_AEga50OFQ/preview",
+      "slides drive url": "https://drive.google.com/file/d/1H2hCCQpg9WO9BXKMhh2QzVo7uB1fL2un/view",
+      "slides embed url": "https://drive.google.com/file/d/1H2hCCQpg9WO9BXKMhh2QzVo7uB1fL2un/preview"
+    },
+    {
+      "group id": "9",
+      "group name": "202-3",
+      "theme title": "",
+      "theme detail": "",
+      "timeslot": "",
+      "room": "",
+      "report drive url": "https://drive.google.com/file/d/1bOsmCS0G3g3XpXjBBDtiw7Izy6_3eUNF/view",
+      "report embed url": "https://drive.google.com/file/d/1bOsmCS0G3g3XpXjBBDtiw7Izy6_3eUNF/preview",
+      "slides drive url": "https://drive.google.com/file/d/1pHi9FWC-hltw9supDaEwR_rXsL_1dTaW/view",
+      "slides embed url": "https://drive.google.com/file/d/1pHi9FWC-hltw9supDaEwR_rXsL_1dTaW/preview"
+    },
+    {
+      "group id": "10",
+      "group name": "202-4",
+      "theme title": "",
+      "theme detail": "",
+      "timeslot": "",
+      "room": "",
+      "report drive url": "https://drive.google.com/file/d/1f5ajjwwMwEDWoNaI-qNtGnNmeN-69Twa/view",
+      "report embed url": "https://drive.google.com/file/d/1f5ajjwwMwEDWoNaI-qNtGnNmeN-69Twa/preview",
+      "slides drive url": "https://drive.google.com/file/d/1nb3KcVG8CwQbxv39eM80gk8MbAYNlDcM/view",
+      "slides embed url": "https://drive.google.com/file/d/1nb3KcVG8CwQbxv39eM80gk8MbAYNlDcM/preview"
+    },
+    {
+      "group id": "11",
+      "group name": "202-5",
+      "theme title": "",
+      "theme detail": "",
+      "timeslot": "",
+      "room": "",
+      "report drive url": "https://drive.google.com/file/d/1n7tr4aGtBu3LsaCL4cMUhgba5alQzZH7/view",
+      "report embed url": "https://drive.google.com/file/d/1n7tr4aGtBu3LsaCL4cMUhgba5alQzZH7/preview",
+      "slides drive url": "https://drive.google.com/file/d/18tdwV7uK1wXoVnwKiBz1ldns71eTGXUa/view",
+      "slides embed url": "https://drive.google.com/file/d/18tdwV7uK1wXoVnwKiBz1ldns71eTGXUa/preview"
+    },
+    {
+      "group id": "12",
+      "group name": "202-6",
+      "theme title": "",
+      "theme detail": "",
+      "timeslot": "",
+      "room": "",
+      "report drive url": "https://drive.google.com/file/d/1QouNSWRZnyIhS-ocXnehaFGZmgyWr8Te/view",
+      "report embed url": "https://drive.google.com/file/d/1QouNSWRZnyIhS-ocXnehaFGZmgyWr8Te/preview",
+      "slides drive url": "https://drive.google.com/file/d/1QesF73z-pte2LW-pHzFn4m-AK_qQoce9/view",
+      "slides embed url": "https://drive.google.com/file/d/1QesF73z-pte2LW-pHzFn4m-AK_qQoce9/preview"
+    },
+    {
+      "group id": "13",
+      "group name": "203-1",
+      "theme title": "",
+      "theme detail": "",
+      "timeslot": "",
+      "room": "",
+      "report drive url": "https://drive.google.com/file/d/1Qh8KgpXqIRIbSdw49Pow5Tp0kPiSVYFs/view",
+      "report embed url": "https://drive.google.com/file/d/1Qh8KgpXqIRIbSdw49Pow5Tp0kPiSVYFs/preview",
+      "slides drive url": "https://drive.google.com/file/d/1s4_DtJErFRIMv4-MHf_0IX58VOQyH9BI/view",
+      "slides embed url": "https://drive.google.com/file/d/1s4_DtJErFRIMv4-MHf_0IX58VOQyH9BI/preview"
+    },
+    {
+      "group id": "14",
+      "group name": "203-2",
+      "theme title": "",
+      "theme detail": "",
+      "timeslot": "",
+      "room": "",
+      "report drive url": "https://drive.google.com/file/d/1eK39argsQH5_EDhAHvlvgeuFnxsRzzMe/view",
+      "report embed url": "https://drive.google.com/file/d/1eK39argsQH5_EDhAHvlvgeuFnxsRzzMe/preview",
+      "slides drive url": "https://drive.google.com/file/d/1xt7Vxdc59TjhGRBLopT4Qq6-taMVAOwO/view",
+      "slides embed url": "https://drive.google.com/file/d/1xt7Vxdc59TjhGRBLopT4Qq6-taMVAOwO/preview"
+    },
+    {
+      "group id": "15",
+      "group name": "203-3",
+      "theme title": "",
+      "theme detail": "",
+      "timeslot": "",
+      "room": "",
+      "report drive u
