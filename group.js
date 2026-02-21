@@ -31,12 +31,18 @@
     var html = '';
     html += '<header class="detail-header">';
     html += '<h1>' + escapeHtml(group.group_name || group.group_id) + '</h1>';
-    html += '<p class="theme-title">' + escapeHtml(group.theme_title || '') + '</p>';
     html += '<ul class="meta-list">';
     html += '<li>発表時間: ' + escapeHtml(group.timeslot_label || '') + '</li>';
     html += '<li>教室: ' + escapeHtml(group.room_name || '') + '</li>';
     html += '</ul>';
     html += '</header>';
+
+    if (group.theme_title) {
+      html += '<div class="section-block">';
+      html += '<h3>探究テーマ</h3>';
+      html += '<p>' + escapeHtml(group.theme_title) + '</p>';
+      html += '</div>';
+    }
 
     if (group.theme_detail) {
       html += '<div class="section-block">';
