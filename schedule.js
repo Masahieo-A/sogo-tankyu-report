@@ -1,7 +1,8 @@
 (function () {
   var DATA_URL = 'data/schedule.json';
   var sortKey = 'timeslot_label';
-  var sortDir = 1; // 1: asc, -1: desc
+  var sortDir = 1;
+  var rawData = null;
 
   function getBasePath() {
     var path = location.pathname;
@@ -27,7 +28,40 @@
     return div.innerHTML;
   }
 
-  // デフォルト: 時間帯（第1→第2→第3）優先、次にグループ名。同点時は時間帯→グループ名で比較
+  function getSearchText() {
+    var el = document.getElementById('scheduleSearch');
+    return el ? (el.value || '').trim().toLowerCase() : '';
+  }
+
+  function getFilterTimeslot() {
+    var el = document.getElementById('filterTimeslot');
+    return el ? (el.value || '').trim() : '';
+  }
+
+  function getFilterRoom() {
+    var el = document.getElementById('filterRoom');
+    return el ? (el.value || '').trim() : '';
+  }
+
+  function matchGroup(g, searchText, filterTimeslot, filterRoom) {
+    if (filterTimeslot && (g.timeslot_label || '').trim() !== filterTimeslot) return false;
+    if (filterRoom && (g.room_name || '').trim() !== filterRoom) return false;
+    if (!searchText) return true;
+    var time = (g.timeslot_label || '').toLowerCase();
+    var room = (g.room_name || '').toLowerCase();
+    var group = (g.group_name || g.group_id || '').toLowerCase();
+    var theme = (g.theme_title || '').toLowerCase();
+    var detail = (g.theme_detail || '').toLowerCase();
+    return time.indexOf(searchText) !== -1 || room.indexOf(searchText) !== -1 ||
+      group.indexOf(searchText) !== -1 || theme.indexOf(searchText) !== -1 || detail.indexOf(searchText) !== -1;
+  }
+
+  function filterGroups(groups, searchText, filterTimeslot, filterRoom) {
+    return groups.filter(function (g) {
+      return matchGroup(g, searchText, filterTimeslot, filterRoom);
+    });
+  }
+
   function sortGroups(groups) {
     var key = sortKey;
     var dir = sortDir;
@@ -44,25 +78,71 @@
     });
   }
 
-  function renderTopPage(data) {
-    document.getElementById('eventDate').textContent = '2025年3月13日';
+  function fillFilterOptions(groups) {
+    var times = {};
+    var rooms = {};
+    groups.forEach(function (g) {
+      var t = (g.timeslot_label || '').trim();
+      var r = (g.room_name || '').trim();
+      if (t) times[t] = true;
+      if (r) rooms[r] = true;
+    });
+    var timeOpts = Object.keys(times).sort();
+    var roomOpts = Object.keys(rooms).sort();
+    var selTime = document.getElementById('filterTimeslot');
+    var selRoom = document.getElementById('filterRoom');
+    if (selTime) {
+      var cur = selTime.value;
+      selTime.innerHTML = '<option value="">すべて</option>' + timeOpts.map(function (t) {
+        return '<option value="' + escapeHtml(t) + '">' + escapeHtml(t) + '</option>';
+      }).join('');
+      if (cur && timeOpts.indexOf(cur) !== -1) selTime.value = cur;
+    }
+    if (selRoom) {
+      var curR = selRoom.value;
+      selRoom.innerHTML = '<option value="">すべて</option>' + roomOpts.map(function (r) {
+        return '<option value="' + escapeHtml(r) + '">' + escapeHtml(r) + '</option>';
+      }).join('');
+      if (curR && roomOpts.indexOf(curR) !== -1) selRoom.value = curR;
+    }
+  }
+
+  function renderTable(groups) {
     var tbody = document.getElementById('scheduleBody');
     if (!tbody) return;
+    document.getElementById('eventDate').textContent = '2025年3月13日';
     var base = getBasePath();
     var groupPage = (base ? base + '/' : '') + 'group.html';
-    var groups = sortGroups(data.groups || []);
     tbody.innerHTML = '';
-    groups.forEach(function (g) {
-      var tr = document.createElement('tr');
-      tr.innerHTML =
-        '<td>' + escapeHtml(g.timeslot_label || '') + '</td>' +
-        '<td>' + escapeHtml(g.room_name || '') + '</td>' +
-        '<td><a class="group-link" href="' + groupPage + '?group_id=' + encodeURIComponent(g.group_id) + '">' + escapeHtml(g.group_name || g.group_id) + '</a></td>' +
-        '<td class="col-theme">' + escapeHtml(g.theme_title || '') + '</td>' +
-        '<td class="col-detail">' + escapeHtml(g.theme_detail || '') + '</td>';
-      tbody.appendChild(tr);
-    });
+    if (groups.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" class="empty-row">条件に一致する発表がありません。検索ワードやフィルターを変えてください。</td></tr>';
+    } else {
+      groups.forEach(function (g) {
+        var tr = document.createElement('tr');
+        tr.innerHTML =
+          '<td>' + escapeHtml(g.timeslot_label || '') + '</td>' +
+          '<td>' + escapeHtml(g.room_name || '') + '</td>' +
+          '<td><a class="group-link" href="' + groupPage + '?group_id=' + encodeURIComponent(g.group_id) + '">' + escapeHtml(g.group_name || g.group_id) + '</a></td>' +
+          '<td class="col-theme">' + escapeHtml(g.theme_title || '') + '</td>' +
+          '<td class="col-detail">' + escapeHtml(g.theme_detail || '') + '</td>';
+        tbody.appendChild(tr);
+      });
+    }
     updateSortIndicators();
+  }
+
+  function updateResultCount(total, filtered) {
+    var el = document.getElementById('resultCount');
+    if (!el) return;
+    if (total === 0) {
+      el.textContent = '0件';
+      return;
+    }
+    if (filtered === total) {
+      el.textContent = '全' + total + '件';
+    } else {
+      el.textContent = '全' + total + '件中 ' + filtered + '件';
+    }
   }
 
   function updateSortIndicators() {
@@ -76,7 +156,21 @@
     });
   }
 
-  function initSort(data) {
+  function applyFiltersAndRender() {
+    if (!rawData || !rawData.groups) return;
+    var searchText = getSearchText();
+    var filterTimeslot = getFilterTimeslot();
+    var filterRoom = getFilterRoom();
+    var filtered = filterGroups(rawData.groups, searchText, filterTimeslot, filterRoom);
+    var sorted = sortGroups(filtered);
+    renderTable(sorted);
+    updateResultCount(rawData.groups.length, sorted.length);
+    var clearBtn = document.getElementById('searchClear');
+    var searchEl = document.getElementById('scheduleSearch');
+    if (clearBtn && searchEl) clearBtn.style.visibility = searchEl.value.trim() ? 'visible' : 'hidden';
+  }
+
+  function initSort() {
     var table = document.getElementById('scheduleTable');
     if (!table) return;
     table.querySelectorAll('thead th.sortable').forEach(function (th) {
@@ -88,16 +182,45 @@
           sortKey = key;
           sortDir = 1;
         }
-        renderTopPage(data);
+        applyFiltersAndRender();
       });
     });
+  }
+
+  function initSearchAndFilters() {
+    var searchEl = document.getElementById('scheduleSearch');
+    var clearBtn = document.getElementById('searchClear');
+    var timeSel = document.getElementById('filterTimeslot');
+    var roomSel = document.getElementById('filterRoom');
+
+    function onFilterChange() {
+      applyFiltersAndRender();
+    }
+
+    if (searchEl) {
+      searchEl.addEventListener('input', onFilterChange);
+      searchEl.addEventListener('keyup', onFilterChange);
+    }
+    if (clearBtn) {
+      clearBtn.style.visibility = 'hidden';
+      clearBtn.addEventListener('click', function () {
+        if (searchEl) searchEl.value = '';
+        onFilterChange();
+        searchEl.focus();
+      });
+    }
+    if (timeSel) timeSel.addEventListener('change', onFilterChange);
+    if (roomSel) roomSel.addEventListener('change', onFilterChange);
   }
 
   if (document.getElementById('scheduleBody')) {
     loadSchedule()
       .then(function (data) {
-        renderTopPage(data);
-        initSort(data);
+        rawData = data;
+        fillFilterOptions(data.groups || []);
+        initSort();
+        initSearchAndFilters();
+        applyFiltersAndRender();
       })
       .catch(function (err) {
         var tbody = document.getElementById('scheduleBody');

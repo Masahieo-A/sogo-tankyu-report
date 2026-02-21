@@ -85,7 +85,13 @@
         e.preventDefault();
         var id = a.getAttribute('data-group-id');
         var group = (data.groups || []).find(function (g) { return g.group_id === id; });
-        if (group) renderSelectedGroup(group);
+        if (group) {
+          var slideUrl = group.slides_pdf_drive_url || group.slides_present_url || group.slides_view_url;
+          if (slideUrl) {
+            window.open(slideUrl, '_blank', 'noopener');
+          }
+          renderSelectedGroup(group);
+        }
       });
     });
   }

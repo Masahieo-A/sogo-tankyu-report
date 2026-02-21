@@ -4,40 +4,77 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>総合探究成果報告会 - スケジュール</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="header">
-    <h1>総合探究成果報告会</h1>
-    <p class="event-date" id="eventDate"></p>
+  <header class="site-header">
+    <div class="site-header-inner">
+      <h1 class="site-title">総合探究成果報告会</h1>
+      <p class="site-event-date" id="eventDate">2025年3月13日</p>
+    </div>
   </header>
 
   <main class="main">
     <section class="schedule-section">
-      <h2>発表スケジュール一覧</h2>
-      <p class="schedule-desc">グループ名をクリックすると、発表詳細・資料ページへ移動します。</p>
-      <div class="table-wrap">
-        <table class="schedule-table" id="scheduleTable">
-          <thead>
-            <tr>
-              <th class="sortable" data-sort="timeslot_label">時間帯</th>
-              <th class="sortable" data-sort="room_name">教室</th>
-              <th class="sortable" data-sort="group_name">グループ</th>
-              <th class="sortable col-theme" data-sort="theme_title">探究テーマ</th>
-              <th class="sortable col-detail" data-sort="theme_detail">テーマ詳細</th>
-            </tr>
-          </thead>
-          <tbody id="scheduleBody">
-            <!-- JS で生成 -->
-          </tbody>
-        </table>
+      <div class="section-header">
+        <h2 class="section-title">発表スケジュール</h2>
+        <p class="section-desc">グループ名をクリックすると、発表詳細・資料ページへ移動します。</p>
+      </div>
+
+      <div class="search-card">
+        <div class="search-row">
+          <label for="scheduleSearch" class="search-label">検索</label>
+          <div class="search-input-wrap">
+            <span class="search-icon" aria-hidden="true">🔍</span>
+            <input type="search" id="scheduleSearch" class="search-input" placeholder="時間帯・教室・グループ・探究テーマで検索" autocomplete="off">
+            <button type="button" id="searchClear" class="search-clear" title="クリア" aria-label="検索をクリア">×</button>
+          </div>
+        </div>
+        <div class="filter-row">
+          <div class="filter-group">
+            <label for="filterTimeslot" class="filter-label">時間帯</label>
+            <select id="filterTimeslot" class="filter-select">
+              <option value="">すべて</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label for="filterRoom" class="filter-label">教室</label>
+            <select id="filterRoom" class="filter-select">
+              <option value="">すべて</option>
+            </select>
+          </div>
+          <p class="result-count" id="resultCount">—</p>
+        </div>
+        <p class="sort-hint">※表の列名をクリックで並び替え</p>
+      </div>
+
+      <div class="table-card">
+        <div class="table-wrap">
+          <table class="schedule-table" id="scheduleTable">
+            <thead>
+              <tr>
+                <th class="sortable" data-sort="timeslot_label" title="クリックで並び替え">時間帯 <span class="sort-icon">↕</span></th>
+                <th class="sortable" data-sort="room_name" title="クリックで並び替え">教室 <span class="sort-icon">↕</span></th>
+                <th class="sortable" data-sort="group_name" title="クリックで並び替え">グループ <span class="sort-icon">↕</span></th>
+                <th class="sortable col-theme" data-sort="theme_title" title="クリックで並び替え">探究テーマ <span class="sort-icon">↕</span></th>
+                <th class="sortable col-detail" data-sort="theme_detail" title="クリックで並び替え">テーマ詳細 <span class="sort-icon">↕</span></th>
+              </tr>
+            </thead>
+            <tbody id="scheduleBody">
+              <!-- JS で生成 -->
+            </tbody>
+          </table>
+        </div>
       </div>
     </section>
   </main>
 
-  <footer class="footer">
-    <p>学内限定・組織内のみ閲覧可能</p>
-    <p><a href="presenter/">発表者用ページはこちら</a></p>
+  <footer class="site-footer">
+    <p class="site-footer-text">学内限定・組織内のみ閲覧可能</p>
+    <p><a href="presenter/" class="site-footer-link">発表者用ページはこちら</a></p>
   </footer>
 
   <script src="schedule.js"></script>
