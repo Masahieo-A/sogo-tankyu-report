@@ -10,7 +10,6 @@
   <header class="header">
     <h1>総合探究成果報告会</h1>
     <p class="event-date" id="eventDate"></p>
-    <p class="notice" id="notice"></p>
   </header>
 
   <main class="main">
@@ -21,10 +20,11 @@
         <table class="schedule-table" id="scheduleTable">
           <thead>
             <tr>
-              <th>時間帯</th>
-              <th>教室</th>
-              <th>グループ</th>
-              <th>探究テーマ</th>
+              <th class="sortable" data-sort="timeslot_label">時間帯</th>
+              <th class="sortable" data-sort="room_name">教室</th>
+              <th class="sortable" data-sort="group_name">グループ</th>
+              <th class="sortable col-theme" data-sort="theme_title">探究テーマ</th>
+              <th class="sortable col-detail" data-sort="theme_detail">テーマ詳細</th>
             </tr>
           </thead>
           <tbody id="scheduleBody">

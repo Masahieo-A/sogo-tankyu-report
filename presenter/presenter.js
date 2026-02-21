@@ -97,14 +97,18 @@
 
     var html = '<p><strong>' + escapeHtml(group.group_name || group.group_id) + '</strong> — ' + escapeHtml(group.theme_title || '') + '</p>';
     html += '<p class="meta">' + escapeHtml(group.timeslot_label || '') + ' · ' + escapeHtml(group.room_name || '') + '</p>';
-    html += '<div class="section-block"><h3>投影用リンク</h3><ul class="link-list">';
+    html += '<div class="section-block"><h3>発表用スライド（PDF）</h3><ul class="link-list">';
+    if (group.slides_pdf_drive_url) {
+      html += '<li><a href="' + escapeHtml(group.slides_pdf_drive_url) + '" target="_blank" rel="noopener" class="link-external">発表スライド PDF を新規タブで開く</a></li>';
+    }
     if (group.slides_present_url) {
-      html += '<li><a href="' + escapeHtml(group.slides_present_url) + '" target="_blank" rel="noopener" class="btn btn-primary">プレゼン表示（present）を新規タブで開く</a></li>';
-    } else {
-      html += '<li>スライドのURLが未登録です。</li>';
+      html += '<li><a href="' + escapeHtml(group.slides_present_url) + '" target="_blank" rel="noopener" class="link-external">プレゼン表示（present）を新規タブで開く</a></li>';
     }
     if (group.slides_view_url) {
-      html += '<li><a href="' + escapeHtml(group.slides_view_url) + '" target="_blank" rel="noopener">閲覧用（通常表示）を開く</a></li>';
+      html += '<li><a href="' + escapeHtml(group.slides_view_url) + '" target="_blank" rel="noopener" class="link-external">閲覧用（通常表示）を開く</a></li>';
+    }
+    if (!group.slides_pdf_drive_url && !group.slides_present_url && !group.slides_view_url) {
+      html += '<li>スライドのURLが未登録です。</li>';
     }
     html += '</ul></div>';
 

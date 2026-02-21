@@ -92,6 +92,39 @@ body {
   color: var(--text);
 }
 
+.schedule-table th.sortable {
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.schedule-table th.sortable:hover {
+  background: var(--border);
+}
+
+.schedule-table th.sort-asc::after {
+  content: " ▲";
+  font-size: 0.75em;
+  opacity: 0.8;
+}
+
+.schedule-table th.sort-desc::after {
+  content: " ▼";
+  font-size: 0.75em;
+  opacity: 0.8;
+}
+
+.schedule-table .col-theme,
+.schedule-table .col-detail {
+  min-width: 180px;
+  max-width: 320px;
+}
+
+.schedule-table .col-detail {
+  min-width: 220px;
+  max-width: 400px;
+}
+
 .schedule-table tbody tr:hover {
   background: var(--bg);
 }
