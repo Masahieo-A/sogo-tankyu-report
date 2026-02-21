@@ -27,11 +27,12 @@
 ### 列名（1行目）の例
 
 ```
-group_id	group_name	theme_title	theme_detail	timeslot_label	room_name	pdf_title	pdf_drive_url	pdf_embed_url	slides_title	slides_pdf_drive_url	slides_pdf_embed_url	notes
+group_id	group_name	theme_title	theme_detail	timeslot_label	room_name	pdf_title	pdf_drive_url	pdf_embed_url	slides_title	slides_pdf_drive_url	slides_pdf_embed_url	slides_present_url	slides_view_url	notes
 ```
 
-**※ 以前 Google Slides 用だった列**  
-`slides_view_url` / `slides_present_url` は使わず、**発表スライドは PDF 用**の `slides_pdf_drive_url` と `slides_pdf_embed_url` にしてください。
+**※ スライドの使い分け**  
+- **聴衆向け（グループ詳細ページ）**: `slides_pdf_drive_url` と `slides_pdf_embed_url`（PDF、バックアップ兼用）。  
+- **発表者用ページ**: `slides_present_url`（Google スライドのプレゼンモード）を追加すると、発表者用で一発で開けます。任意で `slides_view_url`（閲覧用）も追加できます。詳しくは **`docs/PRESENTER_GOOGLE_SLIDES.md`** を参照してください。
 
 **この項目を少し変更してもよいですか？**  
 → **列の追加・並び替え・不要な列の削除は自由です。** 列名（1行目）を変えると、出力される JSON のキーも変わり、サイトがその項目を読めなくなることがあります。詳しくは **`docs/DATA_SCHEMA.md`** を参照してください。

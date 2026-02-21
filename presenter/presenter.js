@@ -86,7 +86,8 @@
         var id = a.getAttribute('data-group-id');
         var group = (data.groups || []).find(function (g) { return g.group_id === id; });
         if (group) {
-          var slideUrl = group.slides_pdf_drive_url || group.slides_present_url || group.slides_view_url;
+          // 発表者用: Google スライドのプレゼンモードを優先（アニメーション等）。なければ閲覧用→PDFの順
+          var slideUrl = group.slides_present_url || group.slides_view_url || group.slides_pdf_drive_url;
           if (slideUrl) {
             window.open(slideUrl, '_blank', 'noopener');
           }
@@ -103,18 +104,18 @@
 
     var html = '<p><strong>' + escapeHtml(group.group_name || group.group_id) + '</strong> — ' + escapeHtml(group.theme_title || '') + '</p>';
     html += '<p class="meta">' + escapeHtml(group.timeslot_label || '') + ' · ' + escapeHtml(group.room_name || '') + '</p>';
-    html += '<div class="section-block"><h3>発表用スライド（PDF）</h3><ul class="link-list">';
-    if (group.slides_pdf_drive_url) {
-      html += '<li><a href="' + escapeHtml(group.slides_pdf_drive_url) + '" target="_blank" rel="noopener" class="link-external">発表スライド PDF を新規タブで開く</a></li>';
-    }
+    html += '<div class="section-block"><h3>発表用スライド（Google スライド）</h3><ul class="link-list">';
     if (group.slides_present_url) {
-      html += '<li><a href="' + escapeHtml(group.slides_present_url) + '" target="_blank" rel="noopener" class="link-external">プレゼン表示（present）を新規タブで開く</a></li>';
+      html += '<li><a href="' + escapeHtml(group.slides_present_url) + '" target="_blank" rel="noopener" class="link-external">プレゼンモードで開く（投影・アニメーション対応）</a></li>';
     }
     if (group.slides_view_url) {
-      html += '<li><a href="' + escapeHtml(group.slides_view_url) + '" target="_blank" rel="noopener" class="link-external">閲覧用（通常表示）を開く</a></li>';
+      html += '<li><a href="' + escapeHtml(group.slides_view_url) + '" target="_blank" rel="noopener" class="link-external">閲覧用で開く</a></li>';
     }
-    if (!group.slides_pdf_drive_url && !group.slides_present_url && !group.slides_view_url) {
-      html += '<li>スライドのURLが未登録です。</li>';
+    if (group.slides_pdf_drive_url) {
+      html += '<li><a href="' + escapeHtml(group.slides_pdf_drive_url) + '" target="_blank" rel="noopener" class="link-external">PDF で開く（バックアップ用）</a></li>';
+    }
+    if (!group.slides_present_url && !group.slides_view_url && !group.slides_pdf_drive_url) {
+      html += '<li>スライドのURLが未登録です。schedule.json に slides_present_url を追加してください。</li>';
     }
     html += '</ul></div>';
 

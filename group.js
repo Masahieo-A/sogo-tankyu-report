@@ -76,7 +76,7 @@
         html += '<li><a href="' + escapeHtml(group.slides_pdf_drive_url) + '" target="_blank" rel="noopener" class="external">新規タブで開く</a></li>';
       }
       if (group.slides_present_url) {
-        html += '<li><a href="' + escapeHtml(group.slides_present_url) + '" target="_blank" rel="noopener" class="btn">投影（プレゼン表示）を新規タブで開く</a></li>';
+        html += '<li><a href="' + escapeHtml(group.slides_present_url) + '" target="_blank" rel="noopener" class="external">投影（プレゼン表示）を新規タブで開く</a></li>';
       }
       if (group.slides_view_url) {
         html += '<li><a href="' + escapeHtml(group.slides_view_url) + '" target="_blank" rel="noopener" class="external">閲覧用（通常表示）を開く</a></li>';

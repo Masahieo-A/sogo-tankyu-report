@@ -37,11 +37,13 @@
 | `pdf_title` | PDF の表示名 |
 | `pdf_drive_url` | PDF を「新規タブで開く」用の URL |
 | `pdf_embed_url` | PDF の埋め込み表示用 URL |
-| `slides_title` | 発表スライド（PDF）の表示名 |
-| `slides_pdf_drive_url` | 発表スライド PDF を「新規タブで開く」用の URL |
-| `slides_pdf_embed_url` | 発表スライド PDF の埋め込み表示用 URL |
+| `slides_title` | 発表スライドの表示名（任意） |
+| `slides_pdf_drive_url` | **聴衆向け** 発表スライド PDF を「新規タブで開く」用の URL（バックアップ兼用） |
+| `slides_pdf_embed_url` | **聴衆向け** 発表スライド PDF の埋め込み表示用 URL |
+| `slides_present_url` | **発表者用** Google スライドの **プレゼンモード** URL（投影・アニメーション用） |
+| `slides_view_url` | **発表者用** Google スライドの閲覧用 URL（任意） |
 
-※ 発表スライドは当日のデバイス・環境の不具合を減らすため **PDF で保存**する運用です。Google Slides の URL は使いません。
+※ **聴衆向け**（グループ詳細ページ）は PDF のまま。**発表者用ページ**では Google スライド（`slides_present_url`）を優先してプレゼンモードで開きます。機材不調時は聴衆向け PDF がバックアップになります。
 
 ### JSON の先頭で使うキー（1行目ではなく別管理でも可）
 

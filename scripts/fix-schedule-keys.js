@@ -20,12 +20,21 @@ const keyMap = {
   'report embed url': 'pdf_embed_url',
   'slides drive url': 'slides_pdf_drive_url',
   'slides embed url': 'slides_pdf_embed_url',
+  'pdf embed url': 'slides_pdf_drive_url', // スプレッドシートで「pdf embed url」のときの発表スライドPDF（新規タブ用）
 };
+const oldKeys = new Set(Object.keys(keyMap));
 
 data.groups = data.groups.map(function (g) {
   const out = {};
   for (const [oldKey, newKey] of Object.entries(keyMap)) {
     if (g[oldKey] !== undefined) out[newKey] = g[oldKey];
+  }
+  // すでに標準キー（アンダースコア入り）の項目はそのまま引き継ぐ（slides_present_url など）
+  for (const key of Object.keys(g)) {
+    if (oldKeys.has(key)) continue;
+    if (key.indexOf('_') !== -1 || key === 'slides_present_url' || key === 'slides_view_url') {
+      out[key] = g[key];
+    }
   }
   // 詳細ページのリンク・識別は group_id で行う。URL を group.html?group_id=201-1 にするため group_id は group_name の値にする
   if (out.group_name) {
