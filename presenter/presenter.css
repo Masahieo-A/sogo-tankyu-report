@@ -40,6 +40,19 @@ body {
   width: 100%;
 }
 
+.gate-back {
+  margin: 0 0 1rem;
+}
+
+.gate-back .back-to-schedule {
+  color: var(--accent);
+  font-size: 0.9rem;
+}
+
+.gate-back .back-to-schedule:hover {
+  color: var(--accent-hover);
+}
+
 .gate-inner h1 {
   margin: 0 0 0.5rem;
   font-size: 1.25rem;

@@ -318,7 +318,11 @@ body {
   transition: background 0.15s;
 }
 
-.schedule-table tbody tr:hover {
+.schedule-table tbody tr.schedule-row-clickable {
+  cursor: pointer;
+}
+
+.schedule-table tbody tr.schedule-row-clickable:hover {
   background: var(--accent-light);
 }
 
@@ -326,18 +330,9 @@ body {
   border-bottom: 0;
 }
 
-.schedule-table .group-link {
-  color: var(--accent);
-  text-decoration: none;
+.schedule-table .group-name-cell {
   font-weight: 600;
-  padding: 0.2em 0;
-  border-radius: 4px;
-  transition: color 0.15s, background 0.15s;
-}
-
-.schedule-table .group-link:hover {
-  color: var(--accent-hover);
-  background: rgba(30, 95, 138, 0.08);
+  color: var(--accent);
 }
 
 .empty-row {

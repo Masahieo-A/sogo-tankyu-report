@@ -119,12 +119,17 @@
     } else {
       groups.forEach(function (g) {
         var tr = document.createElement('tr');
+        tr.className = 'schedule-row-clickable';
+        tr.setAttribute('data-group-id', g.group_id);
         tr.innerHTML =
           '<td>' + escapeHtml(g.timeslot_label || '') + '</td>' +
           '<td>' + escapeHtml(g.room_name || '') + '</td>' +
-          '<td><a class="group-link" href="' + groupPage + '?group_id=' + encodeURIComponent(g.group_id) + '">' + escapeHtml(g.group_name || g.group_id) + '</a></td>' +
+          '<td class="group-name-cell">' + escapeHtml(g.group_name || g.group_id) + '</td>' +
           '<td class="col-theme">' + escapeHtml(g.theme_title || '') + '</td>' +
           '<td class="col-detail">' + escapeHtml(g.theme_detail || '') + '</td>';
+        tr.addEventListener('click', function () {
+          location.href = groupPage + '?group_id=' + encodeURIComponent(g.group_id);
+        });
         tbody.appendChild(tr);
       });
     }
