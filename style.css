@@ -1,21 +1,23 @@
-/* ===== 変数・ベース ===== */
+/* ===== ゲーム画面風テーマ ===== */
 :root {
-  --bg: #f0f2f5;
-  --bg-card: #ffffff;
-  --text: #1a1d21;
-  --text-muted: #5c6370;
-  --accent: #1e5f8a;
-  --accent-hover: #164a6d;
-  --accent-light: #e8f1f6;
-  --border: #e1e4e8;
-  --header-bg: linear-gradient(145deg, #1a3d52 0%, #0f2838 100%);
-  --header-text: #fff;
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
-  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
-  --shadow-lg: 0 8px 24px rgba(0,0,0,0.1);
+  --bg: #0f1419;
+  --bg-panel: #1a2332;
+  --bg-panel-hover: #243044;
+  --text: #e6edf3;
+  --text-muted: #8b9cb3;
+  --accent: #00d4aa;
+  --accent-glow: rgba(0, 212, 170, 0.4);
+  --accent-hover: #00f5c4;
+  --accent-alt: #7c3aed;
+  --border: #2d3a4d;
+  --border-bright: #00d4aa;
+  --header-bg: linear-gradient(180deg, #1a2332 0%, #0f1419 100%);
+  --header-border: 2px solid var(--border-bright);
+  --font-ui: "M PLUS Rounded 1c", "Noto Sans JP", sans-serif;
+  --font: "Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif;
   --radius: 12px;
   --radius-sm: 8px;
-  --font: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+  --shadow-glow: 0 0 20px var(--accent-glow);
 }
 
 * {
@@ -33,13 +35,22 @@ body {
   flex-direction: column;
 }
 
-/* ===== ヘッダー ===== */
+body.game-ui {
+  background-image:
+    linear-gradient(rgba(0, 212, 170, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 212, 170, 0.03) 1px, transparent 1px);
+  background-size: 24px 24px;
+  background-color: var(--bg);
+}
+
+/* ===== ヘッダー（ゲームタイトル風） ===== */
 .site-header {
   background: var(--header-bg);
-  color: var(--header-text);
-  padding: 1.75rem 1.5rem;
+  color: var(--text);
+  padding: 1.5rem 1.5rem;
   text-align: center;
-  box-shadow: var(--shadow-md);
+  border-bottom: var(--header-border);
+  box-shadow: 0 4px 0 rgba(0, 212, 170, 0.15);
 }
 
 .site-header-inner {
@@ -48,16 +59,19 @@ body {
 }
 
 .site-title {
-  margin: 0 0 0.35rem;
-  font-size: 1.6rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
+  margin: 0 0 0.4rem;
+  font-family: var(--font-ui);
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: var(--accent);
+  text-shadow: 0 0 20px var(--accent-glow);
 }
 
 .site-event-date {
   margin: 0;
-  font-size: 1rem;
-  opacity: 0.92;
+  font-size: 0.95rem;
+  color: var(--text-muted);
   font-weight: 500;
 }
 
@@ -80,9 +94,10 @@ body {
 
 .section-title {
   margin: 0 0 0.35rem;
-  font-size: 1.3rem;
+  font-family: var(--font-ui);
+  font-size: 1.25rem;
   font-weight: 700;
-  color: var(--text);
+  color: var(--accent);
 }
 
 .section-desc {
@@ -91,35 +106,36 @@ body {
   color: var(--text-muted);
 }
 
-/* ===== 検索カード ===== */
+/* ===== 検索パネル（コマンド風） ===== */
 .search-card {
-  background: var(--bg-card);
+  background: var(--bg-panel);
   border-radius: var(--radius);
   padding: 1.25rem 1.5rem;
   margin-bottom: 1.25rem;
-  box-shadow: var(--shadow-sm);
-  border: 1px solid var(--border);
+  border: 2px solid var(--border);
+  box-shadow: inset 0 0 0 1px rgba(0, 212, 170, 0.1);
 }
 
-.search-row {
-  margin-bottom: 1rem;
+.search-card:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 16px var(--accent-glow);
 }
 
 .search-label {
   display: block;
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent);
   margin-bottom: 0.4rem;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.1em;
 }
 
 .search-input-wrap {
   display: flex;
   align-items: center;
   background: var(--bg);
-  border: 1px solid var(--border);
+  border: 2px solid var(--border);
   border-radius: var(--radius-sm);
   padding: 0 0.85rem;
   transition: border-color 0.2s, box-shadow 0.2s;
@@ -127,13 +143,13 @@ body {
 
 .search-input-wrap:focus-within {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-light);
+  box-shadow: 0 0 12px var(--accent-glow);
 }
 
 .search-icon {
   font-size: 1.1rem;
   margin-right: 0.6rem;
-  opacity: 0.7;
+  opacity: 0.9;
 }
 
 .search-input {
@@ -160,21 +176,18 @@ body {
   border: 0;
   background: var(--border);
   color: var(--text-muted);
-  border-radius: 50%;
+  border-radius: 6px;
   font-size: 1.1rem;
   line-height: 1;
   cursor: pointer;
   margin-left: 0.5rem;
   padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   transition: background 0.2s, color 0.2s;
 }
 
 .search-clear:hover {
-  background: var(--text-muted);
-  color: #fff;
+  background: var(--accent);
+  color: var(--bg);
 }
 
 .filter-row {
@@ -191,22 +204,22 @@ body {
 
 .filter-label {
   display: block;
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: 0.7rem;
+  font-weight: 700;
   color: var(--text-muted);
   margin-bottom: 0.35rem;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.08em;
 }
 
 .filter-select {
   width: 100%;
   padding: 0.5rem 0.75rem;
-  border: 1px solid var(--border);
+  border: 2px solid var(--border);
   border-radius: var(--radius-sm);
   font-size: 0.9rem;
   font-family: inherit;
-  background: var(--bg-card);
+  background: var(--bg);
   color: var(--text);
   cursor: pointer;
 }
@@ -219,7 +232,7 @@ body {
 .result-count {
   margin: 0 0 0 auto;
   font-size: 0.9rem;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--accent);
 }
 
@@ -229,13 +242,13 @@ body {
   color: var(--text-muted);
 }
 
-/* ===== テーブルカード ===== */
+/* ===== テーブル（ミッションリスト風） ===== */
 .table-card {
-  background: var(--bg-card);
+  background: var(--bg-panel);
   border-radius: var(--radius);
   overflow: hidden;
-  box-shadow: var(--shadow-sm);
-  border: 1px solid var(--border);
+  border: 2px solid var(--border);
+  box-shadow: inset 0 0 0 1px rgba(0, 212, 170, 0.08);
 }
 
 .table-wrap {
@@ -263,26 +276,29 @@ body {
 }
 
 .schedule-table th {
-  font-weight: 600;
-  color: var(--text);
+  font-family: var(--font-ui);
+  font-weight: 700;
+  color: var(--accent);
   white-space: nowrap;
   background: var(--bg);
+  border-bottom: 2px solid var(--border-bright);
 }
 
 .schedule-table th.sortable {
   cursor: pointer;
   user-select: none;
   padding-right: 1.5rem;
-  transition: background 0.15s;
+  transition: background 0.15s, color 0.15s;
 }
 
 .schedule-table th.sortable:hover {
-  background: var(--border);
+  background: var(--bg-panel-hover);
+  color: var(--accent-hover);
 }
 
 .schedule-table th .sort-icon {
   font-size: 0.8em;
-  opacity: 0.8;
+  opacity: 0.9;
   margin-left: 0.15em;
 }
 
@@ -294,13 +310,13 @@ body {
 .schedule-table th.sort-asc::after {
   content: " ▲";
   font-size: 0.75em;
-  opacity: 0.8;
+  opacity: 0.9;
 }
 
 .schedule-table th.sort-desc::after {
   content: " ▼";
   font-size: 0.75em;
-  opacity: 0.8;
+  opacity: 0.9;
 }
 
 .schedule-table .col-theme,
@@ -318,8 +334,13 @@ body {
   transition: background 0.15s;
 }
 
+.schedule-table tbody tr:nth-child(even) {
+  background: rgba(0, 0, 0, 0.15);
+}
+
 .schedule-table tbody tr:hover {
-  background: var(--accent-light);
+  background: var(--bg-panel-hover);
+  box-shadow: inset 0 0 0 1px rgba(0, 212, 170, 0.2);
 }
 
 .schedule-table tbody tr:last-child td {
@@ -330,14 +351,17 @@ body {
   color: var(--accent);
   text-decoration: none;
   font-weight: 600;
-  padding: 0.2em 0;
-  border-radius: 4px;
-  transition: color 0.15s, background 0.15s;
+  padding: 0.25em 0.5em;
+  border-radius: 6px;
+  margin: -0.25em -0.5em;
+  display: inline-block;
+  transition: color 0.15s, background 0.15s, box-shadow 0.15s;
 }
 
 .schedule-table .group-link:hover {
-  color: var(--accent-hover);
-  background: rgba(30, 95, 138, 0.08);
+  color: var(--bg);
+  background: var(--accent);
+  box-shadow: 0 0 12px var(--accent-glow);
 }
 
 .empty-row {
@@ -360,8 +384,8 @@ body {
   padding: 1.25rem 1.5rem;
   font-size: 0.85rem;
   color: var(--text-muted);
-  background: var(--bg-card);
-  border-top: 1px solid var(--border);
+  background: var(--bg-panel);
+  border-top: 2px solid var(--border);
 }
 
 .site-footer-text {
@@ -371,12 +395,15 @@ body {
 .site-footer a {
   color: var(--accent);
   text-decoration: none;
-  font-weight: 500;
+  font-weight: 600;
+  padding: 0.2em 0.4em;
+  border-radius: 6px;
+  transition: color 0.15s, background 0.15s;
 }
 
 .site-footer a:hover {
-  text-decoration: underline;
-  color: var(--accent-hover);
+  color: var(--bg);
+  background: var(--accent);
 }
 
 /* ===== グループ詳細ページ ===== */
@@ -386,8 +413,10 @@ body {
 
 .detail-header h1 {
   margin: 0 0 0.25rem;
+  font-family: var(--font-ui);
   font-size: 1.4rem;
   font-weight: 700;
+  color: var(--accent);
 }
 
 .theme-title {
@@ -420,31 +449,36 @@ body {
   color: var(--accent);
   text-decoration: none;
   font-size: 0.9rem;
-  font-weight: 500;
-  padding: 0.4em 0;
-  border-radius: 4px;
-  transition: color 0.15s, background 0.15s;
+  font-weight: 600;
+  padding: 0.5em 0.8em;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--border);
+  transition: color 0.15s, background 0.15s, border-color 0.15s;
 }
 
 .back-link:hover {
-  color: var(--accent-hover);
-  background: var(--accent-light);
+  color: var(--bg);
+  background: var(--accent);
+  border-color: var(--accent);
 }
 
 .section-block {
-  background: var(--bg-card);
+  background: var(--bg-panel);
   border-radius: var(--radius);
-  border: 1px solid var(--border);
+  border: 2px solid var(--border);
   padding: 1.25rem 1.5rem;
   margin-bottom: 1rem;
-  box-shadow: var(--shadow-sm);
+  box-shadow: inset 0 0 0 1px rgba(0, 212, 170, 0.06);
 }
 
 .section-block h3 {
   margin: 0 0 0.75rem;
+  font-family: var(--font-ui);
   font-size: 1rem;
-  font-weight: 600;
-  color: var(--text);
+  font-weight: 700;
+  color: var(--accent);
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid var(--border);
 }
 
 .pdf-embed-wrap {
@@ -452,7 +486,7 @@ body {
   width: 100%;
   max-width: 100%;
   height: 480px;
-  border: 1px solid var(--border);
+  border: 2px solid var(--border);
   border-radius: var(--radius-sm);
   overflow: hidden;
   background: var(--bg);
@@ -477,13 +511,15 @@ body {
 .link-list a {
   color: var(--accent);
   text-decoration: none;
-  font-weight: 500;
-  transition: color 0.15s;
+  font-weight: 600;
+  padding: 0.2em 0;
+  border-radius: 4px;
+  transition: color 0.15s, background 0.15s;
 }
 
 .link-list a:hover {
-  color: var(--accent-hover);
-  text-decoration: underline;
+  color: var(--bg);
+  background: var(--accent);
 }
 
 .link-list a.external::after {
@@ -495,26 +531,29 @@ body {
   display: inline-block;
   padding: 0.55rem 1.1rem;
   background: var(--accent);
-  color: #fff;
+  color: var(--bg);
   text-decoration: none;
   border-radius: var(--radius-sm);
   font-size: 0.9rem;
-  font-weight: 600;
+  font-weight: 700;
   border: 0;
   cursor: pointer;
-  transition: background 0.15s;
+  transition: background 0.15s, box-shadow 0.15s;
 }
 
 .btn:hover {
   background: var(--accent-hover);
+  box-shadow: 0 0 16px var(--accent-glow);
 }
 
 .btn-secondary {
   background: var(--text-muted);
+  color: var(--text);
 }
 
 .btn-secondary:hover {
-  background: #444;
+  background: var(--border);
+  color: var(--text);
 }
 
 .loading, .error-message {
@@ -524,6 +563,6 @@ body {
 }
 
 .error-message {
-  color: #b91c1c;
-  font-weight: 500;
+  color: #f87171;
+  font-weight: 600;
 }
