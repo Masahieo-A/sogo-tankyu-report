@@ -96,7 +96,7 @@
     }
 
     container.innerHTML = html;
-    document.title = (group.group_name || group.group_id) + ' - 富田高校　総合探求成果報告会';
+    document.title = (group.group_name || group.group_id) + ' - 総合探究成果報告会';
   }
 
   if (document.getElementById('groupDetail')) {
