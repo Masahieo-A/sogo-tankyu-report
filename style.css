@@ -104,6 +104,63 @@ body {
   color: var(--text-muted);
 }
 
+/* ===== 時間割（折りたたみ） ===== */
+.time-details {
+  margin-bottom: 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.time-summary {
+  list-style: none;
+  padding: 0.9rem 1.25rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  user-select: none;
+  transition: background 0.15s;
+}
+
+.time-summary:hover {
+  background: var(--accent-light);
+}
+
+.time-summary::-webkit-details-marker {
+  display: none;
+}
+
+.time-summary::marker {
+  display: none;
+}
+
+.time-details .collapse-icon::before {
+  content: "▼";
+}
+
+.time-details[open] .collapse-icon {
+  transform: rotate(0deg);
+}
+
+.time-details:not([open]) .collapse-icon {
+  transform: rotate(-90deg);
+}
+
+.time-details .time-table-card {
+  margin-bottom: 0;
+  border-radius: 0;
+  border: none;
+  border-top: 1px solid var(--border);
+  box-shadow: none;
+}
+
 /* ===== 時間割テーブル ===== */
 .time-table-card {
   background: var(--bg-card);
