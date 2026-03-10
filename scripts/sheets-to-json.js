@@ -77,7 +77,7 @@ async function main() {
   });
 
   const out = {
-    eventTitle: '総合探究成果報告会',
+    eventTitle: '富田高校　総合探求成果報告会',
     eventDate: '2025年〇月〇日',
     notice: '学内限定です。PDF・スライドは組織内のみ閲覧可能です。',
     groups,

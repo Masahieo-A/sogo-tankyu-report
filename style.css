@@ -47,6 +47,19 @@ body {
   margin: 0 auto;
 }
 
+.site-copyright-notice {
+  margin: 0 0 0.5rem;
+  font-size: 0.7rem;
+  opacity: 0.85;
+  font-weight: 400;
+}
+
+.site-copyright-notice--inline {
+  margin: 0 0 0.75rem;
+  color: var(--text-muted);
+  font-size: 0.7rem;
+}
+
 .site-title {
   margin: 0 0 0.35rem;
   font-size: 1.6rem;
