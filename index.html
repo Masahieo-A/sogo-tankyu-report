@@ -25,32 +25,59 @@
         <p class="section-desc">行（枠内）をクリックすると、発表詳細・資料ページへ移動します。</p>
       </div>
 
-      <div class="search-card">
-        <div class="search-row">
-          <label for="scheduleSearch" class="search-label">検索</label>
-          <div class="search-input-wrap">
-            <span class="search-icon" aria-hidden="true">🔍</span>
-            <input type="search" id="scheduleSearch" class="search-input" placeholder="時間帯・教室・グループ・探究テーマで検索" autocomplete="off">
-            <button type="button" id="searchClear" class="search-clear" title="クリア" aria-label="検索をクリア">×</button>
-          </div>
+      <div class="time-table-card">
+        <h3 class="time-table-title">時間割</h3>
+        <div class="table-wrap">
+          <table class="time-table" aria-label="本日の時間割">
+            <thead>
+              <tr>
+                <th>時間</th>
+                <th>活動内容</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>8:50 ～ 9:00</td><td>教室移動、発表準備</td></tr>
+              <tr><td>9:00 ～ 9:45</td><td>第1発表</td></tr>
+              <tr><td>9:45 ～ 10:00</td><td>発表者入れ替わり・休憩</td></tr>
+              <tr><td>10:00 ～ 10:45</td><td>第2発表</td></tr>
+              <tr><td>10:45 ～ 11:00</td><td>発表者入れ替わり・休憩</td></tr>
+              <tr><td>11:00 ～ 11:45</td><td>第3発表</td></tr>
+              <tr><td>11:45 ～ 11:55</td><td>自分のクラスへ戻る</td></tr>
+              <tr><td>11:55 ～</td><td>アンケート実施、帰りのST</td></tr>
+            </tbody>
+          </table>
         </div>
-        <div class="filter-row">
-          <div class="filter-group">
-            <label for="filterTimeslot" class="filter-label">時間帯</label>
-            <select id="filterTimeslot" class="filter-select">
-              <option value="">すべて</option>
-            </select>
-          </div>
-          <div class="filter-group">
-            <label for="filterRoom" class="filter-label">教室</label>
-            <select id="filterRoom" class="filter-select">
-              <option value="">すべて</option>
-            </select>
-          </div>
-          <p class="result-count" id="resultCount">—</p>
-        </div>
-        <p class="sort-hint">※表の列名をクリックで並び替え</p>
       </div>
+
+      <details class="search-details" id="searchDetails">
+        <summary class="search-summary">検索 <span class="collapse-icon" aria-hidden="true"></span></summary>
+        <div class="search-card">
+          <div class="search-row">
+            <label for="scheduleSearch" class="search-label">検索</label>
+            <div class="search-input-wrap">
+              <span class="search-icon" aria-hidden="true">🔍</span>
+              <input type="search" id="scheduleSearch" class="search-input" placeholder="時間帯・教室・グループ・探究テーマで検索" autocomplete="off">
+              <button type="button" id="searchClear" class="search-clear" title="クリア" aria-label="検索をクリア">×</button>
+            </div>
+          </div>
+          <div class="filter-row">
+            <div class="filter-group">
+              <label for="filterTimeslot" class="filter-label">時間帯</label>
+              <select id="filterTimeslot" class="filter-select">
+                <option value="">すべて</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label for="filterRoom" class="filter-label">教室</label>
+              <select id="filterRoom" class="filter-select">
+                <option value="">すべて</option>
+              </select>
+            </div>
+            <p class="result-count" id="resultCount">—</p>
+          </div>
+          <p class="sort-hint">※表の列名をクリックで並び替え</p>
+        </div>
+      </details>
 
       <div class="table-card">
         <div class="table-wrap">
