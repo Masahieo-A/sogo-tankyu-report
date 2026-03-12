@@ -10,22 +10,29 @@ const schedulePath = path.join(__dirname, '..', 'data', 'schedule.json');
 const raw = fs.readFileSync(schedulePath, 'utf8');
 const data = JSON.parse(raw);
 
-// 1対1のキー変換（URL系など）
+// 1対1のキー変換（スペース区切り・ハイフン区切り両対応）
 const keyMap = {
   'group id': 'group_id',
+  'group-id': 'group_id',
   'group name': 'group_name',
+  'group-name': 'group_name',
   'report drive url': 'pdf_drive_url',
+  'report-drive-url': 'pdf_drive_url',
   'report embed url': 'pdf_embed_url',
+  'report-embed-url': 'pdf_embed_url',
   'slides drive url': 'slides_pdf_drive_url',
+  'slides-drive-url': 'slides_pdf_drive_url',
   'slides embed url': 'slides_pdf_embed_url',
+  'slides-embed-url': 'slides_pdf_embed_url',
   'pdf embed url': 'slides_pdf_drive_url',
+  'pdf-embed-url': 'slides_pdf_drive_url',
 };
-// 複数の候補キーから1つのターゲットへ（時間帯・教室・探究テーマなど。日本語列名対応）
+// 複数の候補キーから1つのターゲットへ（時間帯・教室・探究テーマなど。スペース/ハイフン/日本語対応）
 const multiKeyMap = {
-  theme_title: ['theme title', '探究テーマ', 'テーマ'],
-  theme_detail: ['theme detail', 'テーマ詳細', '発表概要', '概要'],
-  timeslot_label: ['timeslot', '時間帯', '発表時間'],
-  room_name: ['room', '教室', '会場'],
+  theme_title: ['theme title', 'theme-title', '探究テーマ', 'テーマ'],
+  theme_detail: ['theme detail', 'theme-detail', 'テーマ詳細', '発表概要', '概要'],
+  timeslot_label: ['timeslot', 'timeslot_label', '時間帯', '発表時間'],
+  room_name: ['room', 'room_name', '教室', '会場'],
 };
 const oldKeys = new Set(Object.keys(keyMap));
 multiKeyMap.theme_title.forEach(function (k) { oldKeys.add(k); });
