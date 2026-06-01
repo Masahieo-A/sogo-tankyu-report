@@ -3,6 +3,7 @@
   var sortKey = 'timeslot_label';
   var sortDir = 1;
   var rawData = null;
+  var activeTimeslot = '';
 
   function getBasePath() {
     var path = location.pathname;
@@ -34,8 +35,7 @@
   }
 
   function getFilterTimeslot() {
-    var el = document.getElementById('filterTimeslot');
-    return el ? (el.value || '').trim() : '';
+    return activeTimeslot;
   }
 
   function getFilterRoom() {
@@ -89,15 +89,42 @@
     });
     var timeOpts = Object.keys(times).sort();
     var roomOpts = Object.keys(rooms).sort();
-    var selTime = document.getElementById('filterTimeslot');
-    var selRoom = document.getElementById('filterRoom');
-    if (selTime) {
-      var cur = selTime.value;
-      selTime.innerHTML = '<option value="">すべて</option>' + timeOpts.map(function (t) {
-        return '<option value="' + escapeHtml(t) + '">' + escapeHtml(t) + '</option>';
-      }).join('');
-      if (cur && timeOpts.indexOf(cur) !== -1) selTime.value = cur;
+
+    // 時間帯ピル
+    var pillsEl = document.getElementById('timeslotPills');
+    if (pillsEl) {
+      pillsEl.innerHTML = '';
+      // 「すべて」ピル
+      var allPill = document.createElement('button');
+      allPill.type = 'button';
+      allPill.className = 'pill' + (activeTimeslot === '' ? ' active' : '');
+      allPill.textContent = 'すべて';
+      allPill.addEventListener('click', function () {
+        activeTimeslot = '';
+        updatePills();
+        applyFiltersAndRender();
+      });
+      pillsEl.appendChild(allPill);
+      timeOpts.forEach(function (t) {
+        var pill = document.createElement('button');
+        pill.type = 'button';
+        pill.className = 'pill' + (activeTimeslot === t ? ' active' : '');
+        // 短縮表示: "第1発表（9:00〜9:45）" → "第1発表"
+        var short = t.replace(/（.*?）/, '').replace(/\(.*?\)/, '').trim();
+        pill.textContent = short;
+        pill.title = t;
+        pill.setAttribute('data-value', t);
+        pill.addEventListener('click', function () {
+          activeTimeslot = t;
+          updatePills();
+          applyFiltersAndRender();
+        });
+        pillsEl.appendChild(pill);
+      });
     }
+
+    // 教室セレクト
+    var selRoom = document.getElementById('filterRoom');
     if (selRoom) {
       var curR = selRoom.value;
       selRoom.innerHTML = '<option value="">すべて</option>' + roomOpts.map(function (r) {
@@ -105,12 +132,26 @@
       }).join('');
       if (curR && roomOpts.indexOf(curR) !== -1) selRoom.value = curR;
     }
+
+    // ヒーロー統計
+    var statGroups = document.getElementById('statGroups');
+    if (statGroups) statGroups.textContent = groups.length;
+    var statRooms = document.getElementById('statRooms');
+    if (statRooms) statRooms.textContent = Object.keys(rooms).length;
+  }
+
+  function updatePills() {
+    var pillsEl = document.getElementById('timeslotPills');
+    if (!pillsEl) return;
+    pillsEl.querySelectorAll('.pill').forEach(function (p) {
+      var val = p.getAttribute('data-value') || '';
+      p.classList.toggle('active', val === activeTimeslot);
+    });
   }
 
   function renderTable(groups) {
     var tbody = document.getElementById('scheduleBody');
     if (!tbody) return;
-    document.getElementById('eventDate').textContent = '2025年3月13日';
     var base = getBasePath();
     var groupPage = (base ? base + '/' : '') + 'group.html';
     tbody.innerHTML = '';
@@ -195,7 +236,6 @@
   function initSearchAndFilters() {
     var searchEl = document.getElementById('scheduleSearch');
     var clearBtn = document.getElementById('searchClear');
-    var timeSel = document.getElementById('filterTimeslot');
     var roomSel = document.getElementById('filterRoom');
 
     function onFilterChange() {
@@ -214,7 +254,6 @@
         searchEl.focus();
       });
     }
-    if (timeSel) timeSel.addEventListener('change', onFilterChange);
     if (roomSel) roomSel.addEventListener('change', onFilterChange);
   }
 
