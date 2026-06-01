@@ -10,10 +10,10 @@
       "room_name": "101教室",
       "theme_title": "プラスチックごみ削減への道",
       "theme_detail": "地域のプラスチックごみ問題を調査し、削減策を提案する。スーパーや公園でのアンケート・現地調査を通じて実態を把握し、マイバッグ推進キャンペーンの効果を検証した。",
-      "pdf_drive_url": "https://drive.google.com/file/d/SAMPLE-101-report/view",
-      "pdf_embed_url": "https://drive.google.com/file/d/SAMPLE-101-report/preview",
-      "slides_pdf_drive_url": "https://drive.google.com/file/d/SAMPLE-101-slides/view",
-      "slides_pdf_embed_url": "https://drive.google.com/file/d/SAMPLE-101-slides/preview"
+      "pdf_drive_url": "/sample/report-101.pdf",
+      "pdf_embed_url": "/sample/report-101.pdf",
+      "slides_pdf_drive_url": "/sample/slides-101.pdf",
+      "slides_pdf_embed_url": "/sample/slides-101.pdf"
     },
     {
       "group_id": "102",
