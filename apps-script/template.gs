@@ -16,7 +16,7 @@ var DESIGN = {
   borderColor:    '#1a3d52',
   bodyFont:       'Noto Sans JP',
   fallbackFont:   'Arial',
-  footerText:     '富田高校　総合探求成果報告会',
+  footerText:     '富田高校　総合探究成果報告会',
 };
 
 // ── レポートの入力項目定義（後で変更する箇所）──────────────
@@ -80,7 +80,7 @@ function buildPage1_(slide) {
   var y = 0;
 
   // ヘッダー帯
-  y = addHeader_(slide, '富田高校　総合探求成果報告会', y);
+  y = addHeader_(slide, '富田高校　総合探究成果報告会', y);
   y += 4;
 
   // グループ情報ブロック（固定ラベル＋入力欄）
@@ -104,7 +104,7 @@ function buildPage2_(slide) {
   var y = 0;
 
   // ヘッダー帯（細め）
-  y = addHeader_(slide, '富田高校　総合探求成果報告会', y);
+  y = addHeader_(slide, '富田高校　総合探究成果報告会', y);
   y += 4;
 
   PAGE2_SECTIONS.forEach(function (sec) {

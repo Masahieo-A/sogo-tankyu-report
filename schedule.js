@@ -1,41 +1,17 @@
+// ============================================================
+// schedule.js — スケジュール一覧ページ（index.html）
+//   common.js を先に読み込むこと
+// ============================================================
 (function () {
-  var DATA_URL = 'data/schedule.json';
+  var escapeHtml = SiteCommon.escapeHtml;
   var sortKey = 'timeslot_label';
   var sortDir = 1;
   var rawData = null;
   var activeTimeslot = '';
 
-  function getBasePath() {
-    var path = location.pathname;
-    if (path.endsWith('/') || path.endsWith('/index.html')) {
-      return path.replace(/\/index\.html$/, '').replace(/\/?$/, '') || '';
-    }
-    return path.replace(/\/[^/]+$/, '') || '';
-  }
-
-  function loadSchedule() {
-    var base = getBasePath();
-    var url = (base ? base + '/' : '') + DATA_URL;
-    return fetch(url).then(function (res) {
-      if (!res.ok) throw new Error('スケジュールの読み込みに失敗しました。');
-      return res.json();
-    });
-  }
-
-  function escapeHtml(s) {
-    if (s == null) return '';
-    var div = document.createElement('div');
-    div.textContent = s;
-    return div.innerHTML;
-  }
-
   function getSearchText() {
     var el = document.getElementById('scheduleSearch');
     return el ? (el.value || '').trim().toLowerCase() : '';
-  }
-
-  function getFilterTimeslot() {
-    return activeTimeslot;
   }
 
   function getFilterRoom() {
@@ -70,12 +46,33 @@
       var vb = b[key] != null ? String(b[key]).trim() : '';
       var c = va.localeCompare(vb, 'ja');
       if (c !== 0) return c * dir;
+      // 同値の場合は時間帯 → グループ名の昇順で安定させる
       var ct = (a.timeslot_label || '').trim().localeCompare((b.timeslot_label || '').trim(), 'ja');
       if (ct !== 0) return ct;
       var ga = (a.group_name || a.group_id || '').trim();
       var gb = (b.group_name || b.group_id || '').trim();
-      return ga.localeCompare(gb, 'ja') * dir;
+      return ga.localeCompare(gb, 'ja');
     });
+  }
+
+  // ヒーロー・ナビなど、schedule.json のイベント情報を反映する
+  function renderEventInfo(data) {
+    if (data.eventTitle) {
+      document.title = data.eventTitle + ' - スケジュール';
+      var navTitle = document.querySelector('.site-nav-title');
+      if (navTitle) navTitle.textContent = data.eventTitle;
+    }
+    var dateEl = document.getElementById('eventDate');
+    if (dateEl && data.eventDate) dateEl.textContent = data.eventDate;
+    var noticeEl = document.getElementById('siteNotice');
+    if (noticeEl) {
+      if (data.notice) {
+        noticeEl.textContent = data.notice;
+        noticeEl.hidden = false;
+      } else {
+        noticeEl.hidden = true;
+      }
+    }
   }
 
   function fillFilterOptions(groups) {
@@ -133,11 +130,13 @@
       if (curR && roomOpts.indexOf(curR) !== -1) selRoom.value = curR;
     }
 
-    // ヒーロー統計
+    // ヒーロー統計（グループ数・時間帯数・教室数）
     var statGroups = document.getElementById('statGroups');
     if (statGroups) statGroups.textContent = groups.length;
+    var statTimeslots = document.getElementById('statTimeslots');
+    if (statTimeslots) statTimeslots.textContent = timeOpts.length;
     var statRooms = document.getElementById('statRooms');
-    if (statRooms) statRooms.textContent = Object.keys(rooms).length;
+    if (statRooms) statRooms.textContent = roomOpts.length;
   }
 
   function updatePills() {
@@ -152,7 +151,7 @@
   function renderTable(groups) {
     var tbody = document.getElementById('scheduleBody');
     if (!tbody) return;
-    var base = getBasePath();
+    var base = SiteCommon.getBasePath();
     var groupPage = (base ? base + '/' : '') + 'group.html';
     tbody.innerHTML = '';
     if (groups.length === 0) {
@@ -205,9 +204,8 @@
   function applyFiltersAndRender() {
     if (!rawData || !rawData.groups) return;
     var searchText = getSearchText();
-    var filterTimeslot = getFilterTimeslot();
     var filterRoom = getFilterRoom();
-    var filtered = filterGroups(rawData.groups, searchText, filterTimeslot, filterRoom);
+    var filtered = filterGroups(rawData.groups, searchText, activeTimeslot, filterRoom);
     var sorted = sortGroups(filtered);
     renderTable(sorted);
     updateResultCount(rawData.groups.length, sorted.length);
@@ -242,10 +240,7 @@
       applyFiltersAndRender();
     }
 
-    if (searchEl) {
-      searchEl.addEventListener('input', onFilterChange);
-      searchEl.addEventListener('keyup', onFilterChange);
-    }
+    if (searchEl) searchEl.addEventListener('input', onFilterChange);
     if (clearBtn) {
       clearBtn.style.visibility = 'hidden';
       clearBtn.addEventListener('click', function () {
@@ -258,9 +253,11 @@
   }
 
   if (document.getElementById('scheduleBody')) {
-    loadSchedule()
+    SiteCommon.loadSchedule()
+      .then(SiteCommon.authGate)
       .then(function (data) {
         rawData = data;
+        renderEventInfo(data);
         fillFilterOptions(data.groups || []);
         initSort();
         initSearchAndFilters();

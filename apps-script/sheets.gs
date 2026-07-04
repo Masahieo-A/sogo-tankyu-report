@@ -54,7 +54,8 @@ function getGroupList() {
 }
 
 /**
- * 「生徒対応」シートから { 氏名 → group_id } のマップを返す
+ * 「生徒対応」シートから { メールアドレス（小文字） → group_id } のマップを返す
+ * ※ 同姓同名や氏名の表記ゆれの影響を受けないよう、メールアドレスで照合する
  */
 function getStudentMapping() {
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAMES.STUDENT_MAP);
@@ -63,9 +64,9 @@ function getStudentMapping() {
   var values = sheet.getDataRange().getValues();
   var map = {};
   for (var i = 1; i < values.length; i++) {
-    var name    = String(values[i][0] || '').trim();
+    var email   = String(values[i][0] || '').trim().toLowerCase();
     var groupId = String(values[i][1] || '').trim();
-    if (name && groupId) map[name] = groupId;
+    if (email && groupId) map[email] = groupId;
   }
   return map;
 }
@@ -79,7 +80,11 @@ function generateScheduleJson(settings) {
   var jsonObj = {
     eventTitle: settings[SETTING_KEYS.EVENT_TITLE] || '',
     eventDate:  settings[SETTING_KEYS.EVENT_DATE]  || '',
-    notice:     '',
+    notice:     settings[SETTING_KEYS.EVENT_NOTICE] || '',
+    auth: {
+      client_id:      settings[SETTING_KEYS.GOOGLE_CLIENT_ID] || '',
+      allowed_domain: settings[SETTING_KEYS.ALLOWED_DOMAIN]   || '',
+    },
     groups: groups.map(function (g) {
       var entry = {
         group_id:       g.group_id,

@@ -9,6 +9,7 @@ var SHEET_NAMES = {
 };
 
 // 「グループ一覧」シートの列番号（0始まり）
+// ⚠️ 列の並び順はこの定義と一致させること（並び替え・列挿入をすると壊れます）
 var COL = {
   GROUP_ID:             0,
   GROUP_NAME:           1,
@@ -25,8 +26,9 @@ var COL = {
 };
 
 // 「設定」シート A列のキー名（完全一致）
+// ※ GitHub Token はシートには置かず、メニューの「🔑 GitHub トークンを設定」で
+//   スクリプト プロパティに保存します（シート閲覧者に見えないようにするため）。
 var SETTING_KEYS = {
-  GITHUB_TOKEN:         'GitHub Token',
   GITHUB_OWNER:         'GitHub Owner',
   GITHUB_REPO:          'GitHub Repo',
   GITHUB_BRANCH:        'GitHub Branch',
@@ -37,4 +39,14 @@ var SETTING_KEYS = {
   OUTPUT_FOLDER_ID:     'Output Folder ID',
   EVENT_TITLE:          'Event Title',
   EVENT_DATE:           'Event Date',
+  EVENT_NOTICE:         'Notice',
+  ALLOWED_DOMAIN:       'Allowed Domain',
+  GOOGLE_CLIENT_ID:     'Google Client ID',
+  // 旧運用（シートにトークンを貼る方式）からの移行用フォールバック
+  GITHUB_TOKEN:         'GitHub Token',
+};
+
+// スクリプト プロパティのキー名
+var SCRIPT_PROP_KEYS = {
+  GITHUB_TOKEN: 'GITHUB_TOKEN',
 };

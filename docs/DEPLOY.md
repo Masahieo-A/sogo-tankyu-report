@@ -14,8 +14,10 @@
 1. 共有ドライブ（またはフォルダ）に参考資料 PDF・発表スライド PDF を入れる  
 2. 各ファイルの共有を「組織内のみ」にする  
 3. 共有リンクをコピーし、Google Sheets の `pdf_drive_url` / `pdf_embed_url` / `slides_pdf_drive_url` / `slides_pdf_embed_url` などに貼る  
-4. Sheets から `data/schedule.json` を更新（`docs/SHEETS_EXPORT.md` 参照）  
-5. このリポジトリの `data/schedule.json` を更新して GitHub に push → Vercel が自動で再デプロイ
+4. スプレッドシートのメニュー「📋 発表会サイト管理 → ③ サイトに反映」で `data/schedule.json` を GitHub に反映（`apps-script/README.md` 参照）  
+5. Vercel が自動で再デプロイ
+
+> 通常運用（Classroom 提出 → 自動PDF変換）なら 1〜3 も Apps Script が自動で行います。上記は手動でリンクを貼る場合の流れです。
 
 ---
 
@@ -30,7 +32,7 @@
 
 ### 2. ローカルで Git を初期化して push する
 
-**必ず、`index.html` と `presenter/` があるプロジェクトのルートフォルダ**で実行してください。
+**必ず、`index.html` があるプロジェクトのルートフォルダ**で実行してください。
 
 ```bash
 cd プロジェクトのルートフォルダのパス
@@ -80,6 +82,7 @@ git push -u origin main
 
 ## 注意事項（学内限定の意味）
 
-- **サイト本体（Vercel の URL）**: インターネット上で誰でもアクセス可能です。スケジュール表・グループ名・テーマ名・概要は、その URL を知っていれば見られます。
+- **閲覧ゲート**: 「設定」シートの `Allowed Domain` と `Google Client ID` を設定すると、サイトを開いたときに **学校の Google アカウントでのログイン**を求め、他ドメインのアカウントを弾きます（設定が空なら誰でも閲覧可）。
+  - ⚠️ これは静的サイト上の**閲覧ゲート**であり、通信を覗ける技術者には `schedule.json` の中身（スケジュール・テーマ名）自体は取得できます。**ファイル本体（PDF）の保護は、これまでどおり Drive の「組織内のみ」共有が担います**。両方を併用してください。
 - **PDF の中身**: Drive の「組織内のみ」のため、**同じ Google 組織にログインしている人だけ**が開けます。URL が外に漏れても、中身は組織外には見えません。
-- 発表者用ページ（`/presenter/`）は **パスワード**で守っています。パスワードは `presenter/presenter-config.js` の `PRESENTER_PASSWORD` で変更できます（本番では必ず変更し、教員だけに伝えるなどしてください）。
+- **内部資料**: `teacher-guide.html`・`admin-guide.html` や `docs/`・`apps-script/` は `.vercelignore` によって本番サイトにはデプロイされません。

@@ -8,14 +8,19 @@
  * @param {string} content  - JSON文字列
  */
 function pushToGithub(settings, content) {
-  var token    = settings[SETTING_KEYS.GITHUB_TOKEN];
+  // トークンはスクリプト プロパティから読む（旧運用のシート保存はフォールバック）
+  var token    = PropertiesService.getScriptProperties().getProperty(SCRIPT_PROP_KEYS.GITHUB_TOKEN) ||
+                 settings[SETTING_KEYS.GITHUB_TOKEN] || '';
   var owner    = settings[SETTING_KEYS.GITHUB_OWNER];
   var repo     = settings[SETTING_KEYS.GITHUB_REPO];
   var branch   = settings[SETTING_KEYS.GITHUB_BRANCH]    || 'main';
   var filePath = settings[SETTING_KEYS.GITHUB_FILE_PATH]  || 'data/schedule.json';
 
-  if (!token || !owner || !repo) {
-    throw new Error('GitHub の設定（Token / Owner / Repo）が「設定」シートに入力されていません。');
+  if (!token) {
+    throw new Error('GitHub トークンが未設定です。メニューの「🔑 GitHub トークンを設定」から登録してください。');
+  }
+  if (!owner || !repo) {
+    throw new Error('GitHub の設定（Owner / Repo）が「設定」シートに入力されていません。');
   }
 
   var apiBase = 'https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + filePath;

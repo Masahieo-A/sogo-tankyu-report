@@ -1,155 +1,74 @@
 # 総合探究成果報告会 - 学内限定Webサイト
 
-42グループの探究発表会向けに、**閲覧者用**と**発表者用**の2系統で利用できる静的な学内サイトです。
+探究発表会の**スケジュール一覧**と**各グループの資料（PDF）**を閲覧できる静的サイトです。
+データの更新は **Google スプレッドシートのメニュー操作だけ**で完結します（Classroom 提出 → PDF 変換 → サイト反映まで自動）。
 
----
+## 📖 操作ガイド（2冊構成）
 
-## 資料作成・提出ルール（生徒向け）
+| ガイド | 対象 | 内容 |
+|--------|------|------|
+| [`teacher-guide.html`](teacher-guide.html)（実務編） | 学年の担当教員（誰でも） | 毎年の運用: グループ登録・生徒への指示・一括実行・サイトの見方。技術用語なし |
+| [`admin-guide.html`](admin-guide.html)（管理者編） | 技術担当者 | 初回セットアップ（GitHub・Vercel・Google Cloud）・引き継ぎ・技術トラブル対応 |
 
-| 資料種別 | 使用アプリ | 備考 |
-|----------|-----------|------|
-| **探究レポート** | **Google Slides**（テンプレート使用必須） | 教員が配布するテンプレートのコピーに記入して提出 |
-| **発表スライド** | **Google Slides**（フォーマット自由） | Classroom に提出 |
+どちらもブラウザで開いて読めます。
 
-> ⚠️ **Google Docs での提出は受け付けません。** PDF変換時にレイアウトが崩れるため、すべて Google Slides で作成してください。
-
----
-
-## 運用フロー（教員向け）
+## 運用フロー（概要）
 
 ```
-生徒が Classroom に Slides を提出
+生徒が Classroom に Google Slides を提出
         ↓
-Google Sheets の「📋 発表会サイト管理」メニューを開く
+Google スプレッドシートの「📋 発表会サイト管理」メニュー
         ↓
-「⚡ すべて一括実行」をクリック（約3〜5分）
+「⚡ すべて一括実行」をクリック
+  ① Classroom から提出物を取得（メールアドレスでグループに紐付け）
+  ② Drive 上で PDF に変換・「組織内のみ」で共有
+  ③ schedule.json を生成して GitHub にプッシュ
         ↓
-Vercel が自動デプロイ → サイトに反映完了
+Vercel が自動デプロイ → サイトに反映
 ```
 
-詳しいセットアップ手順は [`apps-script/README.md`](apps-script/README.md) を参照してください。
+## リポジトリ構成
 
----
-
-## PDF・スライドは「どこに保存するか」（重要）
-
-**PDF と Google スライドは、このリポジトリや Vercel には置きません。Google ドライブに保存したままにします。**
-
-| 役割 | 保存場所 |
-|------|----------|
-| **PDF・スライドのファイル** | **Google ドライブ**（共有ドライブ推奨） |
-| **このサイト** | スケジュールと **Drive のリンク（URL）** を `data/schedule.json` に書くだけ |
-
-- **共有設定**: 「**組織内のみ**」にし、**Publish to the web（ウェブに公開）は使わない**
-- サイト上ではリンクを表示するだけ。リンクを開いた人は **Google にログインしたうえで、組織内の権限がある人だけ**が PDF/スライドを開けます（URL が漏れても中身は守られる）
-
-**運用の流れ**: 共有ドライブに PDF・スライドを入れる → 共有を「組織内のみ」にする → 共有リンクを Google Sheets に貼る → Sheets から `data/schedule.json` を更新 → このリポジトリを更新して push
-
-### 84個のリンクを JSON にペーストする必要はありますか？ → **いいえ**
-
-- **リンク（PDF 42本・スライド 42本）は、すべて Google スプレッドシートの表に貼るだけ**でよいです。
-- **JSON に 1本ずつコピペする必要はありません。** スプレッドシートをマスタにして、そこから `schedule.json` を**1回の操作で一括生成**します。
-  - **方法1**: スプレッドシートで Apps Script を実行 → ログに表示された JSON をコピー → `data/schedule.json` を**まるごと1回だけ貼り替え**。
-  - **方法2**: スプレッドシートを CSV で公開 → `node scripts/sheets-to-json.js "CSVのURL"` を実行 → `data/schedule.json` が自動で上書き（コピペなし）。
-
-くわしくは **`docs/SHEETS_EXPORT.md`** を参照してください。
-
-### Drive で「201-1」のようにフォルダ／ファイル名を付けて、サイトで 201-1 を選ぶと資料を見られる？
-
-- **フォルダの「ファイルパス」を JSON に 1 つ渡して、サイトから一覧して開く**ことは **できません**。Drive にはそのようなパスはなく、サイトからは「各ファイルの URL」で開く形になります。
-- **できること**: Drive のフォルダに `201-1.pdf`, `201-2.pdf` のように 42 本を置き、**Apps Script で「フォルダ ID」を指定して 1 回実行**すると、ファイル名から group_id（201-1）と各 PDF のリンクを取得できます。その結果をスプレッドシートや JSON に反映すれば、**サイトで「201-1」を選ぶとその PDF が開く**ようにできます。  
-  → 詳しくは **`docs/DRIVE_FOLDER.md`** を参照してください。
-
----
-
-## デプロイ手順（GitHub + Vercel）
-
-### 1. GitHub にリポジトリを作る
-
-1. [GitHub](https://github.com) で **New repository** をクリック
-2. リポジトリ名を決める（例: `sogo-tankyu-report`）
-3. **Public** で作成（Private でも Vercel 連携可能）
-4. 「Initialize with README」は**付けない**（既に README があるため）
-
-### 2. ローカルで Git に上げる
-
-**`index.html` と `presenter/` があるプロジェクトのルートフォルダ**で、ターミナルを開いて実行してください。
-
-```bash
-git init
-git add .
-git commit -m "Initial commit: 総合探究成果報告会サイト"
-git branch -M main
-git remote add origin https://github.com/あなたのユーザー名/リポジトリ名.git
-git push -u origin main
+```
+├── index.html          スケジュール一覧（トップページ）
+├── group.html          グループ詳細（PDF埋め込み）
+├── common.js           共通処理（データ読込・URL検証・Googleログインゲート）
+├── schedule.js         一覧ページの表示・検索・ソート
+├── group.js            詳細ページの表示
+├── style.css           スタイル
+├── data/schedule.json  スケジュールデータ（Apps Script が自動更新）
+├── apps-script/        スプレッドシートに貼る Google Apps Script 一式
+├── docs/               開発者向けドキュメント
+│   ├── DATA_SCHEMA.md    シートの列構成と JSON のキー
+│   ├── DEPLOY.md         GitHub + Vercel のデプロイ手順
+│   └── DRIVE_FOLDER.md   Drive フォルダから手動でリンクを取得する方法（補助）
+├── sample/             デモ用サンプルデータ（架空の内容）
+├── teacher-guide.html  教員向け操作ガイド・実務編（本番サイトには公開されない）
+├── admin-guide.html    管理者向けガイド・技術編（本番サイトには公開されない）
+├── vercel.json         セキュリティヘッダー等の設定
+└── .vercelignore       本番サイトにデプロイしないファイルの指定
 ```
 
-- `あなたのユーザー名` と `リポジトリ名` を、作ったリポジトリに合わせて書き換える
-- GitHub のリポジトリページで **Code** → **HTTPS** の URL をコピーして `git remote add origin ...` にそのまま貼り付けてよい
-- Git 未導入の場合は [Git](https://git-scm.com/) をインストールする
+## セキュリティ設計
 
-### 3. Vercel で公開する
+| 対象 | 保護のしくみ |
+|------|--------------|
+| サイトの閲覧 | 「設定」シートで `Allowed Domain` / `Google Client ID` を設定すると、学校の Google アカウントでのログインを要求（閲覧ゲート） |
+| PDF の中身 | Google Drive の共有「**組織内のみ**」。リンクが漏れても組織外からは開けない（こちらが本命の保護） |
+| GitHub トークン | シートには置かず、スプレッドシートのメニュー「🔑 GitHub トークンを設定」から **Apps Script のスクリプト プロパティ**に保存 |
+| 内部資料 | `teacher-guide.html`・`admin-guide.html`・`docs/`・`apps-script/` は `.vercelignore` で本番サイトから除外 |
 
-1. [Vercel](https://vercel.com) にログイン（GitHub 連携が簡単）
-2. **Add New…** → **Project**
-3. **Import Git Repository** で、さきほど push したリポジトリを選ぶ
-4. **Framework Preset**: **Other** のまま
-5. **Root Directory**: 空のまま
-6. **Deploy** をクリック
-
-完了すると `https://プロジェクト名.vercel.app` のような URL が発行されます。学内ではこの URL を案内すればよいです。
-
-### 4. 以降の更新のしかた
-
-`data/schedule.json` や HTML/CSS/JS を直したら、同じフォルダで:
-
-```bash
-git add .
-git commit -m "スケジュール更新"
-git push
-```
-
-push するだけで Vercel が自動で再デプロイします。
-
----
-
-## 注意事項
-
-- **サイト本体（Vercel の URL）**: 誰でもアクセス可能。スケジュール表・グループ名・テーマ名・概要は URL を知っていれば見られます。
-- **PDF・スライドの中身**: Drive を「組織内のみ」にしているため、**同じ Google 組織でログインしている人だけ**が開けます。
-- 発表者用（`/presenter/`）は **パスワード**で保護。`presenter/presenter-config.js` の `PRESENTER_PASSWORD` を本番用に必ず変更し、教員だけに伝えてください。
-
----
-
-## 構成
-
-- **閲覧者用（ルート）**: `index.html`（スケジュール一覧）, `group.html`（グループ詳細・PDF埋め込み＋リンク、Slides 投影リンク）
-- **発表者用**: `presenter/`（パスワード入室 → グループ選択 → プレゼン表示を新規タブで開く）
-- **データ**: `data/schedule.json`（Google Sheets からエクスポートする想定）
-
-## ローカルで確認
+## ローカルで確認（開発者向け）
 
 ```bash
 npx serve -l 8080
-# または
-python3 -m http.server 8080
 ```
 
-- 閲覧者用: http://localhost:8080/
-- 発表者用: http://localhost:8080/presenter/
+- 一覧: http://localhost:8080/
+- 詳細: http://localhost:8080/group.html?group_id=101
 
-## ファイル一覧
+※ ルートの `serve.json`（`cleanUrls: false`）により、本番（Vercel）と同じ URL 挙動になります。
 
-```
-├── index.html, group.html, style.css, schedule.js, group.js
-├── data/schedule.json
-├── presenter/ (index.html, presenter.css, presenter-config.js, presenter.js)
-├── docs/ (DATA_SCHEMA.md, SHEETS_EXPORT.md, DEPLOY.md)
-├── vercel.json
-└── README.md
-```
+## デプロイ
 
-## 発表スライドは PDF で保存
-
-当日のデバイス・環境による不具合を減らすため、**発表スライドも PDF で保存**する運用です。  
-`schedule.json` には `slides_pdf_drive_url`（新規タブで開く用）と `slides_pdf_embed_url`（埋め込み表示用）に Drive の PDF リンクを登録してください。Google Slides の URL は使いません。
+GitHub に push すると Vercel が自動デプロイします。初回セットアップは [`docs/DEPLOY.md`](docs/DEPLOY.md) を参照してください。

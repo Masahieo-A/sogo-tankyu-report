@@ -1,21 +1,14 @@
+// ============================================================
+// group.js — グループ詳細ページ（group.html）
+//   common.js を先に読み込むこと
+// ============================================================
 (function () {
+  var escapeHtml = SiteCommon.escapeHtml;
+  var isSafeUrl = SiteCommon.isSafeUrl;
+
   function getGroupId() {
     var params = new URLSearchParams(location.search);
     return params.get('group_id') || '';
-  }
-
-  function escapeHtml(s) {
-    if (s == null) return '';
-    var div = document.createElement('div');
-    div.textContent = s;
-    return div.innerHTML;
-  }
-
-  function loadSchedule() {
-    return fetch('data/schedule.json').then(function (res) {
-      if (!res.ok) throw new Error('データの読み込みに失敗しました。');
-      return res.json();
-    });
   }
 
   function renderGroupDetail(data) {
@@ -27,6 +20,12 @@
       container.innerHTML = '<p class="error-message">指定されたグループが見つかりません。</p>';
       return;
     }
+
+    // 不正なURL（http・想定外ドメイン・javascript: 等）は表示しない
+    var pdfEmbed = isSafeUrl(group.pdf_embed_url) ? group.pdf_embed_url : '';
+    var pdfDrive = isSafeUrl(group.pdf_drive_url) ? group.pdf_drive_url : '';
+    var slidesEmbed = isSafeUrl(group.slides_pdf_embed_url) ? group.slides_pdf_embed_url : '';
+    var slidesDrive = isSafeUrl(group.slides_pdf_drive_url) ? group.slides_pdf_drive_url : '';
 
     var html = '';
     html += '<header class="detail-header">';
@@ -51,53 +50,54 @@
       html += '</div>';
     }
 
-    if (group.pdf_embed_url || group.pdf_drive_url) {
+    if (pdfEmbed || pdfDrive) {
       html += '<div class="section-block">';
       html += '<h3>資料</h3>';
       if (group.pdf_title) html += '<p><strong>' + escapeHtml(group.pdf_title) + '</strong></p>';
-      if (group.pdf_embed_url) {
+      if (pdfEmbed) {
         html += '<div class="pdf-embed-wrap">';
-        html += '<iframe src="' + escapeHtml(group.pdf_embed_url) + '" title="PDF"></iframe>';
+        html += '<iframe src="' + escapeHtml(pdfEmbed) + '" title="PDF"></iframe>';
         html += '</div>';
       }
-      html += '<ul class="link-list">';
-      if (group.pdf_drive_url) {
-        html += '<li><a href="' + escapeHtml(group.pdf_drive_url) + '" target="_blank" rel="noopener" class="external">新規タブで開く</a></li>';
+      if (pdfDrive) {
+        html += '<ul class="link-list">';
+        html += '<li><a href="' + escapeHtml(pdfDrive) + '" target="_blank" rel="noopener" class="external">新規タブで開く</a></li>';
+        html += '</ul>';
       }
-      html += '</ul>';
       html += '</div>';
     }
 
-    if (group.slides_pdf_drive_url || group.slides_pdf_embed_url || group.slides_view_url || group.slides_present_url) {
+    if (slidesEmbed || slidesDrive) {
       html += '<div class="section-block">';
       html += '<h3>発表スライド</h3>';
       if (group.slides_title) html += '<p><strong>' + escapeHtml(group.slides_title) + '</strong></p>';
-      if (group.slides_pdf_embed_url) {
+      if (slidesEmbed) {
         html += '<div class="pdf-embed-wrap">';
-        html += '<iframe src="' + escapeHtml(group.slides_pdf_embed_url) + '" title="発表スライド PDF"></iframe>';
+        html += '<iframe src="' + escapeHtml(slidesEmbed) + '" title="発表スライド PDF"></iframe>';
         html += '</div>';
       }
-      html += '<ul class="link-list">';
-      if (group.slides_pdf_drive_url) {
-        html += '<li><a href="' + escapeHtml(group.slides_pdf_drive_url) + '" target="_blank" rel="noopener" class="external">新規タブで開く</a></li>';
+      if (slidesDrive) {
+        html += '<ul class="link-list">';
+        html += '<li><a href="' + escapeHtml(slidesDrive) + '" target="_blank" rel="noopener" class="external">新規タブで開く</a></li>';
+        html += '</ul>';
       }
-      if (group.slides_view_url) {
-        html += '<li><a href="' + escapeHtml(group.slides_view_url) + '" target="_blank" rel="noopener" class="external">閲覧用（通常表示）を開く</a></li>';
-      }
-      html += '</ul>';
       html += '</div>';
     }
 
-    if (!group.theme_detail && !group.pdf_embed_url && !group.pdf_drive_url && !group.slides_pdf_drive_url && !group.slides_pdf_embed_url && !group.slides_view_url && !group.slides_present_url) {
+    if (!group.theme_detail && !pdfEmbed && !pdfDrive && !slidesEmbed && !slidesDrive) {
       html += '<div class="section-block"><p class="text-muted">このグループの資料はまだ登録されていません。</p></div>';
     }
 
     container.innerHTML = html;
-    document.title = (group.group_name || group.group_id) + ' - 富田高校　総合探求成果報告会';
+    var eventTitle = data.eventTitle || '富田高校　総合探究成果報告会';
+    document.title = (group.group_name || group.group_id) + ' - ' + eventTitle;
+    var navTitle = document.querySelector('.site-nav-title');
+    if (navTitle && data.eventTitle) navTitle.textContent = data.eventTitle;
   }
 
   if (document.getElementById('groupDetail')) {
-    loadSchedule()
+    SiteCommon.loadSchedule()
+      .then(SiteCommon.authGate)
       .then(renderGroupDetail)
       .catch(function (err) {
         var container = document.getElementById('groupDetail');

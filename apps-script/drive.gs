@@ -120,7 +120,7 @@ function getEmbedUrl(fileId) {
 
 /**
  * 提出物ファイルIDをシートに書き込む
- * studentMap: { '生徒名': 'group_id', ... }
+ * studentMap: { 'メールアドレス（小文字）': 'group_id', ... }
  */
 function writeFileIds(groups, studentMap, reportSubs, slidesSubs) {
   var sheet    = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAMES.GROUP_LIST);
@@ -135,9 +135,10 @@ function writeFileIds(groups, studentMap, reportSubs, slidesSubs) {
 
   function writeToGroup(subs, fileCol) {
     subs.forEach(function (sub) {
-      var groupId = studentMap[sub.studentName];
+      var email = String(sub.studentEmail || '').trim().toLowerCase();
+      var groupId = email ? studentMap[email] : '';
       if (!groupId) {
-        Logger.log('生徒対応なし: ' + sub.studentName);
+        Logger.log('生徒対応なし: ' + sub.studentName + ' <' + (email || 'メール不明') + '>');
         return;
       }
       var row = rowIndex[groupId];
